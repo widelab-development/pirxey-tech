@@ -27,7 +27,9 @@ interface Props {
 const { brief, nav, footerNote = "" } = Astro.props;
 
 // Reasonable defaults for an LP-style nav (consumers can override)
+// First item is always a way back to the registry — important for navigation.
 const navItems = nav ?? [
+  { label: "← Briefs", href: "/", back: true },
   { label: "Thesis", href: "#thesis", active: true },
   { label: "Cockpit", href: "#cockpit" },
   { label: "The Gap", href: "#solo" },

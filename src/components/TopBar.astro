@@ -3,7 +3,7 @@
  * TopBar — Pirxey header. Logo on the left, optional mission identifier,
  * inline nav on the right. Matches the Figma "Header" component (5:566).
  */
-interface NavItem { label: string; href: string; active?: boolean; }
+interface NavItem { label: string; href: string; active?: boolean; back?: boolean; }
 
 interface Props {
   mission?: { label: string; id: string; title: string } | null;
@@ -28,20 +28,20 @@ const {
     {mission && (
       <>
         <span class="bar" aria-hidden="true"></span>
-        <div class="mission">
+        <a class="mission" href="/" aria-label="Back to Mission Briefs index">
           <span class="marker" aria-hidden="true"></span>
           <span class="label">{mission.label}</span>
           <span class="id">{mission.id}</span>
           <span class="sep" aria-hidden="true">/</span>
           <span class="title">{mission.title}</span>
-        </div>
+        </a>
       </>
     )}
   </div>
 
   <nav aria-label="Page sections">
     {nav.map(item => (
-      <a href={item.href}>
+      <a href={item.href} class:list={[item.back && "back"]}>
         {item.active && <span class="active-dot" aria-hidden="true"></span>}
         {item.label}
       </a>
@@ -86,7 +86,9 @@ const {
   .logo img { height: 40px; width: auto; }
   .brand .bar { height: 28px; width: 1px; background: rgba(249, 249, 234, 0.22); display: block; }
 
-  .mission { display: inline-flex; align-items: baseline; gap: 10px; line-height: 1; font-family: var(--font-sans); }
+  .mission { display: inline-flex; align-items: baseline; gap: 10px; line-height: 1; font-family: var(--font-sans); text-decoration: none; color: inherit; transition: opacity 0.15s; }
+  a.mission:hover { opacity: 0.78; }
+  a.mission:hover .title { color: var(--orange); }
   .mission .marker {
     width: 7px; height: 7px; border-radius: 50%;
     background: var(--orange); box-shadow: 0 0 10px var(--orange);
@@ -104,6 +106,8 @@ const {
   nav a { display: inline-flex; align-items: center; gap: 8px; color: var(--on-dark); text-decoration: none; transition: opacity 0.15s; }
   nav a:hover { opacity: 0.75; }
   nav .active-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--on-dark); }
+  nav a.back { color: var(--on-dark-2); font-weight: 500; padding-right: 12px; border-right: 1px solid var(--line-dark-2); }
+  nav a.back:hover { color: var(--orange); opacity: 1; }
   nav a.talk { color: var(--orange); }
   nav a.talk:hover { color: var(--orange-hover); opacity: 1; }
   nav a.talk svg { width: 21px; height: 21px; margin-left: 8px; transition: transform 0.2s; }
@@ -114,6 +118,6 @@ const {
   @media (max-width: 760px) {
     .topbar { padding: 14px 20px; }
     .brand .bar, .mission { display: none; }
-    nav a:not(.talk) { display: none; }
+    nav a:not(.talk):not(.back) { display: none; }
   }
 </style>
