@@ -49,8 +49,43 @@ const {
 
 <style>
   .sec { position: relative; overflow: hidden; border-radius: var(--radius-section); margin: var(--gutter); }
-  .sec-dark { background: var(--bg); color: var(--on-dark); }
-  .sec-light { background: var(--beige); color: var(--on-light); }
+  /* Dark: transparent — SpaceCanvas paints through. Small orange/cream glow accents. */
+  .sec-dark { background: transparent; color: var(--on-dark); }
+  .sec-dark::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.85;
+    background-image:
+      radial-gradient(circle at 18% 12%, rgba(255, 96, 38, 0.10), transparent 22%),
+      radial-gradient(circle at 82% 22%, rgba(249, 249, 234, 0.05), transparent 24%);
+    mix-blend-mode: screen;
+  }
+  /* Light: layered cream + live noise + dotted pattern bottom + radial blurs */
+  .sec-light {
+    color: var(--on-light);
+    background:
+      linear-gradient(rgba(249, 249, 234, 0.9), rgba(249, 249, 234, 0.9)),
+      url("/brand/pirxey-noise-light.webp") center / 1024px 1024px,
+      var(--color-surface-warm);
+  }
+  /* Bottom-anchored Pirxey "Dots" pattern from Figma AI LP — 1440×400 SVG of
+     concentric dot rings, used as a subtle horizon decoration. */
+  .sec-light::after {
+    content: ""; position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 400px;
+    background: url("/brand/pirxey-dots.svg") center bottom / 1440px 400px no-repeat;
+    opacity: 0.45;
+    pointer-events: none;
+    z-index: 1;
+    mask-image: linear-gradient(to top, black 40%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, black 40%, transparent 100%);
+  }
+  /* Orange radial glows in the corners — same composition as AI LP frame */
+  .sec-light::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.85;
+    background-image:
+      radial-gradient(ellipse 60% 60% at 0% 0%,   rgba(255, 96, 38, 0.18), transparent 70%),
+      radial-gradient(ellipse 50% 60% at 100% 100%, rgba(255, 96, 38, 0.15), transparent 70%);
+  }
   .sec-inner { position: relative; z-index: 2; max-width: var(--max-w); margin: 0 auto; padding: var(--section-y) var(--pad-x); }
 
   .sec-eyebrow {

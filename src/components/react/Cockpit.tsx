@@ -87,6 +87,7 @@ export default function Cockpit() {
   };
 
   return (
+    <div className="cockpit-shell">
     <div className="cockpit-grid">
       <div className="panel">
         <div className="tier-row">
@@ -143,17 +144,13 @@ export default function Cockpit() {
           </div>
         </div>
 
-        <div className="notes">
-          <Note title="Measured, not modeled" body="Pulled from 53 production codebases we built or co-built between 2024 and 2026 — greenfield MVPs, scale-ups, legacy rescues. Same toolchain, different terrain." />
-          <Note title="Boost = shipped value" body="We track reviewed, merged, deployed work — not lines generated. Code thrown away, rewritten, or rolled back does not count." />
-          <Note title="Why the curve bends" body="Below ~30k LOC AI compounds the engineer. Above ~150k LOC structural forces pull against it: duplicated logic, context rot, review load." />
+        <div className="panel-foot">
+          <div>
+            <div className="examples-label">Typical scope at this size</div>
+            <div className="examples-text">{tier.examples}</div>
+          </div>
+          <div className="credit">Model by <strong>Łukasz Graliński</strong> · Pirxey</div>
         </div>
-
-        <div>
-          <div className="examples-label">Typical scope at this size</div>
-          <div className="examples-text">{tier.examples}</div>
-        </div>
-        <div className="credit">Model by <strong>Łukasz Graliński</strong> · Pirxey</div>
       </div>
 
       <div className="chart-panel">
@@ -280,6 +277,15 @@ export default function Cockpit() {
           })}
         </svg>
       </div>
+      </div>
+
+      {/* Methodology row sits OUTSIDE .cockpit-grid so it can span full width
+          as a 3-column horizontal strip below the chart/panel pair. */}
+      <div className="methodology">
+        <NoteCard kicker="01 · Method" title="Measured, not modeled" body="Pulled from 53 production codebases we built or co-built between 2024 and 2026 — greenfield MVPs, scale-ups, legacy rescues. Same toolchain, different terrain." />
+        <NoteCard kicker="02 · Definition" title="Boost = shipped value" body="We track reviewed, merged, deployed work — not lines generated. Code thrown away, rewritten, or rolled back does not count." />
+        <NoteCard kicker="03 · Mechanics" title="Why the curve bends" body="Below ~30k LOC AI compounds the engineer. Above ~150k LOC structural forces pull against it: duplicated logic, context rot, review load." />
+      </div>
     </div>
   );
 }
@@ -297,11 +303,12 @@ function Field({ label, id, value, onChange }: { label: string; id: string; valu
   );
 }
 
-function Note({ title, body }: { title: string; body: string }) {
+function NoteCard({ kicker, title, body }: { kicker: string; title: string; body: string }) {
   return (
-    <div className="note">
-      <strong>{title}</strong>
-      <span>{body}</span>
-    </div>
+    <article className="note-card">
+      <p className="note-kicker">{kicker}</p>
+      <h4 className="note-title">{title}</h4>
+      <p className="note-body">{body}</p>
+    </article>
   );
 }

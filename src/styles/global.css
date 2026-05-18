@@ -1,19 +1,54 @@
 @import "./tokens.css";
 
+/**
+ * Pirxey font faces — self-hosted via @fontsource packages.
+ * Webflow CDN (cdn.prod.website-files.com) blocks hot-link referrers with 403,
+ * so we ship our own copies of Space Grotesk (display) + Fira Sans (body).
+ * Alias names "Spacegrotesk" / "Firasans" match live pirxey.com computed CSS.
+ */
+@import "@fontsource/space-grotesk/400.css";
+@import "@fontsource/space-grotesk/500.css";
+@import "@fontsource/space-grotesk/600.css";
+@import "@fontsource/space-grotesk/700.css";
+@import "@fontsource/fira-sans/400.css";
+@import "@fontsource/fira-sans/400-italic.css";
+@import "@fontsource/fira-sans/500.css";
+@import "@fontsource/fira-sans/600.css";
+@import "@fontsource/fira-sans/700.css";
+
+/* Aliases so existing tokens (--font-display: "Spacegrotesk", ...) work without renaming. */
+@font-face { font-family: "Spacegrotesk"; font-weight: 400; font-style: normal; src: local("Space Grotesk"); }
+@font-face { font-family: "Spacegrotesk"; font-weight: 500; font-style: normal; src: local("Space Grotesk"); }
+@font-face { font-family: "Spacegrotesk"; font-weight: 600; font-style: normal; src: local("Space Grotesk"); }
+@font-face { font-family: "Spacegrotesk"; font-weight: 700; font-style: normal; src: local("Space Grotesk"); }
+@font-face { font-family: "Firasans"; font-weight: 400; font-style: normal; src: local("Fira Sans"); }
+@font-face { font-family: "Firasans"; font-weight: 400; font-style: italic; src: local("Fira Sans"); }
+@font-face { font-family: "Firasans"; font-weight: 500; font-style: normal; src: local("Fira Sans"); }
+@font-face { font-family: "Firasans"; font-weight: 600; font-style: normal; src: local("Fira Sans"); }
+@font-face { font-family: "Firasans"; font-weight: 700; font-style: normal; src: local("Fira Sans"); }
+
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; background: var(--bg); }
 html, body { margin: 0; padding: 0; }
 body {
-  background: var(--bg);
+  background: transparent;
   color: var(--on-dark);
   font-family: var(--font-body);
   font-size: var(--body-md);
   line-height: 1.625;
-  letter-spacing: -0.1px;
+  letter-spacing: -0.48px;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* SpaceCanvas — fixed WebGL star field at z-index -1, painted by all dark sections */
+.space-canvas {
+  position: fixed; inset: 0;
+  width: 100vw; height: 100vh;
+  z-index: -1; pointer-events: none;
+}
+.space-canvas__canvas { width: 100%; height: 100%; display: block; }
 a { color: inherit; }
 img, svg { display: block; max-width: 100%; }
 

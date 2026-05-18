@@ -1,53 +1,69 @@
 /**
- * Pirxey design tokens — sourced from
- * Figma "Website" file (4Xir9bcCZJRNsMU6OJfzOp), Colors & Typography pages.
- * Single source of truth for the brand on pirxey.tech.
+ * Pirxey design tokens — live-computed from pirxey.com 2026-05-13.
+ * Brand assets in /public/brand/* are extracted from the live Webflow CDN.
+ * Reconciled against Figma file 4Xir9bcCZJRNsMU6OJfzOp (canonical node 1:50).
+ *
+ * Source: AIJobIndex/docs/pirxey-live-design-audit.md
  */
 :root {
-  /* surfaces — dark */
-  --bg: #060411;          /* dark-300 — hero, cover, footer */
-  --bg-2: #1F1F1F;        /* dark-200 — standard dark sections */
-  --bg-3: #2E2E2E;        /* dark-100 — card bg on dark */
+  color-scheme: dark light;
 
-  /* surfaces — light */
-  --beige: #F9F9EA;       /* beige-100 — primary cream */
-  --beige-2: #E6E6C9;     /* beige-200 — hero/cover light */
-  --beige-3: #E9DBA1;     /* beige-300 — accent on light */
+  /* ── COLORS ─────────────────────────────────────────────────────── */
+  --color-bg: #060411;              /* dark surface — hero, footer */
+  --color-bg-soft: #100e1f;         /* slightly lifted dark */
+  --color-surface: #060411;
+  --color-surface-strong: #1f1f1f;
+  --color-surface-warm: #f9f9ea;    /* primary cream — light sections */
+  --color-surface-warm-strong: #e6e6c9;
 
-  /* accent — orange family */
-  --orange: #FF6026;          /* primary */
-  --orange-hover: #E64E14;    /* primary-hover */
-  --orange-muted: #E16C43;    /* lighter overlay */
-  --orange-overlay: #D44E1A;  /* accent-on-light */
+  --color-text: #f9f9ea;
+  --color-text-muted: #bbbbb0;
+  --color-text-dim: #7d7c7b;
+  --color-text-dark: #060411;
+  --color-text-dark-muted: #5a5a56;
 
-  /* secondary */
-  --blue: #3698FA;
-  --blue-deep: #1A7FE8;
-  --amber: #FFA740;
+  --color-accent: #ff6026;          /* primary orange CTA */
+  --color-accent-strong: #e64e14;   /* hover */
+  --color-accent-2: #d44e1a;        /* orange on light */
+  --color-accent-soft: #e9dba1;
 
-  /* text — on dark */
-  --on-dark: #F9F9EA;
-  --on-dark-2: #BBBBB0;
-  --on-dark-3: #7D7C7B;
+  --color-border: rgba(249, 249, 234, 0.62);
+  --color-border-strong: rgba(249, 249, 234, 0.92);
+  --color-border-soft: rgba(249, 249, 234, 0.08);
+  --color-border-dark: rgba(6, 4, 17, 0.16);
+  --color-shadow: rgba(6, 4, 17, 0.36);
 
-  /* text — on light */
-  --on-light: #060411;
-  --on-light-2: #7D7C7B;
-  --on-light-3: #B8B8A8;
-
-  /* lines */
-  --line-dark: rgba(249, 249, 234, 0.08);
+  /* aliases kept for backward compatibility with current components */
+  --bg: var(--color-bg);
+  --bg-2: var(--color-surface-strong);
+  --beige: var(--color-surface-warm);
+  --beige-2: var(--color-surface-warm-strong);
+  --orange: var(--color-accent);
+  --orange-hover: var(--color-accent-strong);
+  --orange-overlay: var(--color-accent-2);
+  --on-dark: var(--color-text);
+  --on-dark-2: var(--color-text-muted);
+  --on-dark-3: var(--color-text-dim);
+  --on-light: var(--color-text-dark);
+  --on-light-2: var(--color-text-dark-muted);
+  --on-light-3: #b8b8a8;
+  --line-dark: var(--color-border-soft);
   --line-dark-2: rgba(249, 249, 234, 0.16);
-  --line-light: #D4D4C7;
-  --line-light-2: #E6E6D8;
+  --line-light: #d4d4c7;
+  --line-light-2: #e6e6d8;
+  --amber: #ffa740;
+  --blue: #3698fa;
+  --blue-deep: #1a7fe8;
+  --bg-3: #2e2e2e;
 
-  /* typography */
-  --font-sans: "Space Grotesk", system-ui, -apple-system, sans-serif;
-  --font-body: "Fira Sans", "Inter", system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  /* ── TYPOGRAPHY ─────────────────────────────────────────────────── */
+  /* Live Pirxey fonts loaded via Pirxey CDN @font-face (see global.css). */
+  --font-display: "Spacegrotesk", "Space Grotesk", Tahoma, sans-serif;
+  --font-body:    "Firasans", "Fira Sans", Tahoma, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+  --font-sans:    var(--font-display);
 
-  /* type scale (from Figma typography tokens) */
-  --display: 72px / 76px var(--font-sans);  /* shorthand: size/line font */
+  /* type scale from Figma (live H1 56/58.8 confirmed) */
   --h1-size: 56px; --h1-lh: 60px; --h1-ls: -0.02em;
   --h2-size: 40px; --h2-lh: 44px; --h2-ls: -0.018em;
   --h3-size: 32px; --h3-lh: 40px; --h3-ls: -0.014em;
@@ -55,24 +71,34 @@
   --h5-size: 20px; --h5-lh: 26px;
   --body-lg: 18px; --body-lg-lh: 28px;
   --body-md: 16px; --body-md-lh: 26px;
-  --meta:   14px; --meta-lh:   20px;
-  --caption:12px; --caption-lh:16px;
-  --label:  10px; --label-lh:  12px; --label-ls: 0.08em;
 
-  /* radii / spacing */
+  /* ── SHAPE / SHADOW ─────────────────────────────────────────────── */
+  --radius-card: 16px;              /* live card radius */
+  --radius-panel: 24px;
   --radius-section: 24px;
-  --radius-card: 14px;
-  --radius-pill: 999px;
+  --radius-pill: 9999px;
+
+  --shadow-glow: 0 0 0 1px rgba(255, 96, 38, 0.22), 0 24px 70px rgba(255, 96, 38, 0.16);
+  --shadow-card: 0 20px 60px rgba(6, 4, 17, 0.28);
+  --shadow-card-light: 0 18px 48px rgba(6, 4, 17, 0.12);
+
+  /* ── LAYOUT ─────────────────────────────────────────────────────── */
+  --max-w: 1280px;
+  --container-narrow: 920px;
   --pad-x: 80px;
   --pad-x-md: 48px;
   --pad-x-sm: 24px;
-  --max-w: 1280px;
   --gutter: 8px;
   --section-y: 88px;
   --section-y-md: 72px;
   --section-y-sm: 56px;
 
-  /* motion */
+  /* header geometry — live measured */
+  --header-h: 71px;
+
+  /* ── MOTION ─────────────────────────────────────────────────────── */
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-fast: 160ms ease;
+  --transition-base: 240ms ease;
 }

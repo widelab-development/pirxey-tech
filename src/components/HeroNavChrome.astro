@@ -1,0 +1,36 @@
+---
+/**
+ * Decorative system-chrome dots in the navbar's see-through notch.
+ * Belongs to the hero (scrolls with the page) so the notch correctly
+ * looks empty when the hero scrolls past. Matches pirxey.com.
+ */
+---
+<div aria-hidden="true" class="hero-nav-chrome">
+  <div class="group left">
+    <span class="dot"></span>
+    <span class="dot filled"></span>
+  </div>
+  <div class="group right">
+    <span class="dot"></span>
+    <span class="rect"></span>
+  </div>
+</div>
+<style>
+  .hero-nav-chrome {
+    position: absolute;
+    top: 28px; left: 50%;
+    transform: translateX(-50%);
+    width: 360px;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 6; pointer-events: none;
+  }
+  .group { display: flex; align-items: center; gap: 6px; }
+  .dot, .rect {
+    background: var(--color-text-dark);
+    border-radius: 1px;
+  }
+  .dot { width: 6px; height: 6px; border-radius: 1px; border: 1px solid var(--color-text-dark); background: transparent; }
+  .dot.filled { background: var(--color-text-dark); }
+  .rect { width: 18px; height: 6px; }
+  @media (max-width: 1080px) { .hero-nav-chrome { display: none; } }
+</style>

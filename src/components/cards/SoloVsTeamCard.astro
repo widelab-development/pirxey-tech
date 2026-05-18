@@ -12,16 +12,24 @@ interface Props {
 const { n, title, titleHtml, solo, team, punch } = Astro.props;
 ---
 <article class="solo-card">
-  <div class="head">
-    <span class="num">{n}</span>
-    <span class="pill solo">Solo</span>
-    <span class="pill team">Team</span>
-  </div>
+  <header class="head">
+    <div class="id">
+      <span class="bullet" aria-hidden="true"></span>
+      <span class="num">{n}</span>
+    </div>
+    <span class="kicker">Solo vs Team</span>
+  </header>
   {titleHtml ? <h3 set:html={titleHtml} /> : <h3>{title}</h3>}
   <div class="vs">
-    <div class="col"><strong>Solo</strong>{solo}</div>
-    <div class="arrow" aria-hidden="true">→</div>
-    <div class="col" set:html={`<strong>Team</strong>${team}`} />
+    <div class="col">
+      <strong>Solo</strong>
+      <span class="col-body">{solo}</span>
+    </div>
+    <div class="divider" aria-hidden="true"></div>
+    <div class="col">
+      <strong>Team</strong>
+      <span class="col-body" set:html={team} />
+    </div>
   </div>
   <div class="punch" set:html={punch} />
 </article>
@@ -29,29 +37,87 @@ const { n, title, titleHtml, solo, team, punch } = Astro.props;
 <style>
   .solo-card {
     background: #fff; border: 1px solid var(--line-light); border-radius: 16px;
-    padding: 32px; display: flex; flex-direction: column; gap: 14px;
+    padding: 32px; display: flex; flex-direction: column; gap: 18px;
     position: relative; overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s, background 0.2s;
   }
-  .head { display: flex; align-items: center; gap: 14px; font-family: var(--font-sans); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
-  .head .num { color: var(--on-light-2); }
-  .pill { padding: 4px 10px; border-radius: var(--radius-pill); font-size: 10px; letter-spacing: 0.08em; }
-  .pill.solo { background: rgba(54, 152, 250, 0.10); color: var(--blue-deep); }
-  .pill.team { background: rgba(255, 96, 38, 0.10); color: var(--orange-overlay); }
-  h3 { font-family: var(--font-sans); font-size: 24px; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
-  h3 :global(code) { font-family: var(--font-mono); font-size: 0.8em; }
-  .vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: start; margin-top: 8px; }
-  .vs .col { font-size: 14px; line-height: 1.5; color: var(--on-light); }
-  .vs .col strong { font-family: var(--font-sans); font-size: 11px; color: var(--on-light-2); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; display: block; margin-bottom: 6px; }
-  .vs .col :global(em) { font-style: normal; color: var(--orange-overlay); font-weight: 600; }
-  .arrow { font-family: var(--font-sans); color: var(--on-light-3); font-size: 24px; display: flex; align-items: center; font-weight: 600; }
+  .solo-card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+    opacity: 0.45; transition: opacity 0.2s;
+  }
+  .solo-card:hover {
+    border-color: rgba(212, 78, 26, 0.4);
+    transform: translateY(-2px);
+  }
+  .solo-card:hover::before { opacity: 1; }
+
+  /* Pirxey chapter-mark — same numeral pattern as Forces cards */
+  .head { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .id { display: inline-flex; align-items: center; gap: 12px; color: var(--color-accent-2); }
+  .id .bullet {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--color-accent-2);
+    box-shadow: 0 0 12px var(--color-accent-2);
+    flex-shrink: 0;
+  }
+  .id .num {
+    font-family: var(--font-display);
+    font-weight: 700; font-size: 44px; line-height: 1;
+    letter-spacing: -0.04em; color: var(--color-accent-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .kicker {
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--color-accent-2);
+    padding: 6px 14px;
+    background: rgba(255, 96, 38, 0.08);
+    border-radius: 999px;
+  }
+
+  h3 {
+    font-family: var(--font-display); font-size: 22px;
+    line-height: 1.22; font-weight: 700; letter-spacing: -0.014em;
+    margin: 0; color: var(--on-light); text-wrap: balance;
+  }
+  h3 :global(code) { font-family: var(--font-mono); font-size: 0.82em; }
+
+  .vs {
+    display: grid; grid-template-columns: 1fr 1px 1fr;
+    gap: 18px; align-items: stretch;
+    padding: 18px 0; border-top: 1px dashed var(--line-light); border-bottom: 1px dashed var(--line-light);
+  }
+  .vs .col {
+    display: flex; flex-direction: column; gap: 8px;
+    font-size: 14px; line-height: 1.55; color: var(--on-light);
+  }
+  .vs .col strong {
+    font-family: var(--font-display);
+    font-size: 11px; color: var(--on-light-2);
+    text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700;
+  }
+  .vs .col .col-body :global(em) {
+    font-style: normal; color: var(--color-accent-2); font-weight: 600;
+  }
+  .vs .divider {
+    background: var(--line-light);
+    width: 1px; height: 100%; justify-self: center;
+  }
+
   .punch {
-    margin-top: 6px; padding-top: 14px; border-top: 1px dashed var(--line-light);
-    font-family: var(--font-sans); font-size: 13px; line-height: 1.5;
+    font-family: var(--font-display);
+    font-size: 14px; line-height: 1.5;
     color: var(--on-light); font-weight: 500;
   }
-  .punch :global(em) { font-style: normal; color: var(--orange-overlay); font-weight: 600; }
+  .punch :global(em) {
+    font-style: normal; color: var(--color-accent-2); font-weight: 700;
+  }
+
   @media (max-width: 760px) {
-    .vs { grid-template-columns: 1fr; gap: 8px; }
-    .arrow { display: none; }
+    .vs { grid-template-columns: 1fr; }
+    .vs .divider { display: none; }
+    .id .num { font-size: 36px; }
   }
 </style>

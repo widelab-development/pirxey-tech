@@ -1,17 +1,25 @@
 ---
 /**
- * TopBar — Pirxey header. Logo on the left, optional mission identifier,
- * inline nav on the right. Matches the Figma "Header" component (5:566).
+ * TopBar — Pirxey header.
+ *
+ * Live pirxey.com pattern (audit 2026-05-13):
+ *  - 71px sticky header, transparent base, brand block (left) + dark
+ *    "peninsula" gap revealing the cream hero behind + nav block (right).
+ *  - Brand & nav blocks have rgba(6,4,17,.40) fill, bottom-inner radius
+ *    16px, and extend to viewport edge via ::before pseudo.
+ *  - 16x16 concave SVG corner masks at the inner-top corners create the
+ *    notch "scoop" — same dark alpha so the two pieces read as one shape.
+ *  - Below 1080px the notch collapses to a solid dark bar.
+ *
+ * In our usage the brand block fits Pirxey logo + Mission Brief identifier.
  */
 interface NavItem { label: string; href: string; active?: boolean; back?: boolean; }
-
 interface Props {
   mission?: { label: string; id: string; title: string } | null;
   nav?: NavItem[];
   ctaLabel?: string;
   ctaHref?: string;
 }
-
 const {
   mission = null,
   nav = [],
@@ -20,14 +28,13 @@ const {
 } = Astro.props;
 ---
 
-<header class="topbar" id="topbar">
-  <div class="brand">
-    <a class="logo" href="https://pirxey.com" target="_blank" rel="noopener" aria-label="Pirxey homepage">
-      <img src="/assets/pirxey-logo.svg" alt="Pirxey" width="151" height="40" />
-    </a>
-    {mission && (
-      <>
-        <span class="bar" aria-hidden="true"></span>
+<header class="site-header" id="topbar">
+  <div class="site-header__inner">
+    <div class="site-header__brand-block">
+      <a class="brand" href="https://pirxey.com" target="_blank" rel="noopener" aria-label="Pirxey homepage">
+        <img src="/brand/pirxey-logotype.svg" alt="Pirxey" width="190" height="48" />
+      </a>
+      {mission && (
         <a class="mission" href="/" aria-label="Back to Mission Briefs index">
           <span class="marker" aria-hidden="true"></span>
           <span class="label">{mission.label}</span>
@@ -35,58 +42,146 @@ const {
           <span class="sep" aria-hidden="true">/</span>
           <span class="title">{mission.title}</span>
         </a>
-      </>
-    )}
+      )}
+    </div>
+
+    <div class="site-header__notch" aria-hidden="true"></div>
+
+    <div class="site-header__nav-block">
+      <nav aria-label="Page sections">
+        {nav.map(item => (
+          <a href={item.href} class:list={[item.back && "back"]}>
+            {item.active && <span class="active-dot" aria-hidden="true"></span>}
+            {item.label}
+          </a>
+        ))}
+        <a href={ctaHref} class="talk">{ctaLabel}
+          <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M0 26.73h42.29L32.23 37.85 35.08 41l13.71-15.16c.69-.76.69-1.92 0-2.68L35.08 8l-2.85 3.15 10.06 11.13H0v4.45z" fill="#ff6026"/>
+          </svg>
+        </a>
+      </nav>
+      <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="drawer" id="menuBtn">
+        <span class="bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="menu-label">Menu</span>
+      </button>
+    </div>
   </div>
 
-  <nav aria-label="Page sections">
-    {nav.map(item => (
-      <a href={item.href} class:list={[item.back && "back"]}>
-        {item.active && <span class="active-dot" aria-hidden="true"></span>}
-        {item.label}
+  <aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-label="Mobile navigation">
+    <div class="drawer-inner">
+      {nav.map(item => (
+        <a href={item.href} class:list={["drawer-link", item.back && "back"]}>
+          {item.label}
+        </a>
+      ))}
+      <a href={ctaHref} class="drawer-cta">{ctaLabel}
+        <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M0 26.73h42.29L32.23 37.85 35.08 41l13.71-15.16c.69-.76.69-1.92 0-2.68L35.08 8l-2.85 3.15 10.06 11.13H0v4.45z" fill="currentColor"/>
+        </svg>
       </a>
-    ))}
-    <a href={ctaHref} class="talk">{ctaLabel}
-      <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M0 26.73h42.29L32.23 37.85 35.08 41l13.71-15.16c.69-.76.69-1.92 0-2.68L35.08 8l-2.85 3.15 10.06 11.13H0v4.45z" fill="#FF6026"/>
-      </svg>
-    </a>
-  </nav>
+    </div>
+  </aside>
+  <div class="drawer-scrim" id="drawerScrim" aria-hidden="true"></div>
 </header>
 
 <script>
-  // Toggle background on scroll for sticky readability.
   const tb = document.getElementById("topbar");
   if (tb) {
     const onScroll = () => tb.classList.toggle("is-stuck", window.scrollY > 120);
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
   }
+  // Mobile drawer
+  const btn = document.getElementById("menuBtn");
+  const drawer = document.getElementById("drawer");
+  const scrim = document.getElementById("drawerScrim");
+  function openDrawer(open: boolean) {
+    if (!btn || !drawer || !scrim) return;
+    btn.setAttribute("aria-expanded", String(open));
+    drawer.setAttribute("aria-hidden", String(!open));
+    drawer.classList.toggle("is-open", open);
+    scrim.classList.toggle("is-open", open);
+    document.body.style.overflow = open ? "hidden" : "";
+  }
+  btn?.addEventListener("click", () => {
+    const isOpen = drawer?.classList.contains("is-open");
+    openDrawer(!isOpen);
+  });
+  scrim?.addEventListener("click", () => openDrawer(false));
+  drawer?.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => openDrawer(false)));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") openDrawer(false); });
 </script>
 
 <style>
-  .topbar {
-    position: absolute; top: 0; left: 0; right: 0; z-index: 50;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 80px; height: 72px;
+  /* ── HEADER SHELL ──────────────────────────────────────────────── */
+  .site-header {
+    position: sticky; top: 0; z-index: 50;
+    height: var(--header-h, 71px);
+    background: transparent;
+    /* allow ::before pseudos extending to viewport edges to be clipped */
+    overflow: hidden;
+  }
+  .site-header.is-stuck {
+    /* once scrolled past hero, fade in a subtle backdrop blur */
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  }
+
+  .site-header__inner {
+    position: relative; display: grid;
+    /* Brand sizes to its content (logo + MB identifier ≈420px on one line).
+       Notch is the cream peninsula. Nav gets the remaining 1fr. */
+    grid-template-columns: max-content 200px minmax(0, 1fr);
+    align-items: stretch;
+    width: min(calc(100% - 3rem), 1320px);
+    height: var(--header-h, 71px);
+    margin-inline: auto;
+  }
+
+  /* ── BRAND BLOCK ───────────────────────────────────────────────── */
+  .site-header__brand-block,
+  .site-header__nav-block {
+    display: flex; align-items: center;
+    background: rgba(6, 4, 17, 0.45);
+    position: relative; z-index: 1;
+  }
+  .site-header__brand-block {
+    grid-column: 1;
+    border-bottom-right-radius: 16px;
+    padding: 0 24px 0 0;
+    gap: 18px;
+    flex-wrap: nowrap; white-space: nowrap; min-width: 0;
+  }
+  .site-header__brand-block::before {
+    content: ""; position: absolute; inset: 0 100% 0 auto;
+    width: 100vw; background: inherit; pointer-events: none;
+  }
+  .site-header__brand-block::after {
+    content: ""; position: absolute; top: 0; left: 100%;
+    width: 16px; height: 16px;
+    background: rgba(6, 4, 17, 0.45);
+    mask-image: url("/brand/pirxey-notch-corner-left.svg");
+    mask-size: 16px 16px; mask-repeat: no-repeat;
+    -webkit-mask-image: url("/brand/pirxey-notch-corner-left.svg");
+    -webkit-mask-size: 16px 16px; -webkit-mask-repeat: no-repeat;
     pointer-events: none;
   }
-  .topbar > * { pointer-events: auto; }
-  .topbar.is-stuck {
-    position: fixed;
-    background: rgba(6, 4, 17, 0.78);
-    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-    animation: dropin 0.25s var(--ease-out);
+
+  .brand {
+    display: inline-flex; align-items: center; height: 40px;
+    text-decoration: none; color: var(--on-dark);
   }
-  @keyframes dropin { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+  .brand:hover { opacity: 0.85; }
+  .brand img { height: 40px; width: auto; display: block; }
 
-  .brand { display: inline-flex; align-items: center; gap: 18px; height: 40px; }
-  .logo { display: inline-flex; align-items: center; height: 40px; text-decoration: none; color: var(--on-dark); }
-  .logo:hover { opacity: 0.85; }
-  .logo img { height: 40px; width: auto; }
-  .brand .bar { height: 28px; width: 1px; background: rgba(249, 249, 234, 0.22); display: block; }
-
-  .mission { display: inline-flex; align-items: baseline; gap: 10px; line-height: 1; font-family: var(--font-sans); text-decoration: none; color: inherit; transition: opacity 0.15s; }
+  .mission {
+    display: inline-flex; align-items: center; gap: 10px;
+    line-height: 1; font-family: var(--font-display);
+    text-decoration: none; color: inherit; transition: opacity 0.15s;
+    padding-left: 18px;
+    border-left: 1px solid rgba(249, 249, 234, 0.22);
+    white-space: nowrap; flex-shrink: 0;
+  }
   a.mission:hover { opacity: 0.78; }
   a.mission:hover .title { color: var(--orange); }
   .mission .marker {
@@ -97,27 +192,168 @@ const {
   .mission .label { font-weight: 700; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--orange); }
   .mission .id { font-weight: 700; font-size: 13px; letter-spacing: 0.06em; color: var(--on-dark-2); font-variant-numeric: tabular-nums; }
   .mission .sep { color: var(--on-dark-3); font-weight: 500; font-size: 13px; }
-  .mission .title { font-family: var(--font-body); font-style: italic; font-weight: 500; font-size: 15px; color: var(--on-dark); letter-spacing: -0.005em; max-width: 380px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* Mission title is rendered prominently in the hero — keep the topbar
+     purely an identifier badge to free up horizontal space for the nav. */
+  .mission .title, .mission .sep { display: none; }
+
+  /* ── NOTCH ─────────────────────────────────────────────────────── */
+  .site-header__notch {
+    grid-column: 2;
+    /* transparent gap reveals the page behind */
+    background: transparent;
+  }
+
+  /* ── NAV BLOCK ─────────────────────────────────────────────────── */
+  .site-header__nav-block {
+    grid-column: 3;
+    justify-content: flex-end;
+    border-bottom-left-radius: 16px;
+    padding-left: clamp(1rem, 2.5vw, 3rem);
+    padding-right: 24px;
+    min-width: 0;
+  }
+  .site-header__nav-block::after {
+    content: ""; position: absolute; inset: 0 auto 0 100%;
+    width: 100vw; background: inherit; pointer-events: none;
+  }
+  .site-header__nav-block::before {
+    content: ""; position: absolute; top: 0; right: 100%;
+    width: 16px; height: 16px;
+    background: rgba(6, 4, 17, 0.45);
+    mask-image: url("/brand/pirxey-notch-corner-right.svg");
+    mask-size: 16px 16px; mask-repeat: no-repeat;
+    -webkit-mask-image: url("/brand/pirxey-notch-corner-right.svg");
+    -webkit-mask-size: 16px 16px; -webkit-mask-repeat: no-repeat;
+    pointer-events: none;
+  }
 
   nav {
-    display: flex; align-items: center; gap: 32px;
-    font-family: var(--font-sans); font-weight: 700; font-size: 16px; line-height: 1.3;
+    display: flex; align-items: center; flex-wrap: nowrap;
+    gap: clamp(0.9rem, 1.8vw, 1.5rem);
+    font-family: var(--font-display); font-weight: 700; font-size: 15px; line-height: 1;
+    white-space: nowrap;
   }
-  nav a { display: inline-flex; align-items: center; gap: 8px; color: var(--on-dark); text-decoration: none; transition: opacity 0.15s; }
+  nav a {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--on-dark); text-decoration: none;
+    white-space: nowrap;
+    transition: opacity 0.15s, color 0.15s;
+  }
   nav a:hover { opacity: 0.75; }
-  nav .active-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--on-dark); }
-  nav a.back { color: var(--on-dark-2); font-weight: 500; padding-right: 12px; border-right: 1px solid var(--line-dark-2); }
+  nav .active-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--on-dark); flex-shrink: 0; }
+  nav a.back {
+    color: var(--on-dark-2); font-weight: 500;
+    padding-right: 14px; margin-right: 4px;
+    border-right: 1px solid rgba(249, 249, 234, 0.22);
+  }
   nav a.back:hover { color: var(--orange); opacity: 1; }
   nav a.talk { color: var(--orange); }
-  nav a.talk:hover { color: var(--orange-hover); opacity: 1; }
-  nav a.talk svg { width: 21px; height: 21px; margin-left: 8px; transition: transform 0.2s; }
+  nav a.talk:hover { color: var(--orange-strong, var(--orange-hover)); opacity: 1; }
+  nav a.talk svg { width: 16px; height: 16px; margin-left: 4px; transition: transform 0.2s; flex-shrink: 0; }
   nav a.talk:hover svg { transform: translateX(3px); }
 
-  @media (max-width: 1280px) { .mission .title { max-width: 220px; } }
-  @media (max-width: 1100px) { .mission .title, .mission .sep { display: none; } nav { gap: 24px; font-size: 15px; } }
+  /* ── RESPONSIVE ────────────────────────────────────────────────── */
+  /* Tighter nav at 1200-1080 — slightly smaller font so all 5 items keep one line */
+  @media (max-width: 1200px) { nav { font-size: 14px; gap: 1rem; } }
+
+  /* ── MOBILE DRAWER ───────────────────────────────────────────────
+     Below 900px the inline nav is replaced by a Menu button + slide-in
+     drawer. The notch collapses to a single dark bar so the brand block
+     can take its natural width. */
+  .menu-btn { display: none; }
+  .drawer, .drawer-scrim { display: none; }
+
+  @media (max-width: 900px) {
+    .site-header__inner {
+      grid-template-columns: 1fr auto;
+      width: 100%; padding: 0 24px;
+    }
+    .site-header { background: rgba(6, 4, 17, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    .site-header__brand-block, .site-header__nav-block {
+      background: transparent; border-radius: 0;
+    }
+    .site-header__brand-block::before,
+    .site-header__brand-block::after,
+    .site-header__nav-block::before,
+    .site-header__nav-block::after { display: none; }
+    .site-header__notch { display: none; }
+    .site-header__nav-block { grid-column: 2; padding: 0; }
+    .site-header__nav-block nav { display: none; }
+    .menu-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: transparent; border: 1px solid rgba(249,249,234,0.22);
+      color: var(--on-dark);
+      font-family: var(--font-display); font-weight: 700; font-size: 13px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 8px 14px; border-radius: 999px; cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .menu-btn:hover { border-color: var(--orange); color: var(--orange); }
+    .menu-btn .bars { display: inline-flex; flex-direction: column; gap: 3px; }
+    .menu-btn .bars span { width: 14px; height: 1.6px; background: currentColor; border-radius: 2px; }
+    .menu-btn[aria-expanded="true"] .bars span:nth-child(1) { transform: translateY(4.6px) rotate(45deg); }
+    .menu-btn[aria-expanded="true"] .bars span:nth-child(2) { opacity: 0; }
+    .menu-btn[aria-expanded="true"] .bars span:nth-child(3) { transform: translateY(-4.6px) rotate(-45deg); }
+
+    .mission { display: none; }
+
+    .drawer-scrim {
+      display: block; position: fixed; inset: 0; z-index: 60;
+      background: rgba(6,4,17,0.6); opacity: 0; pointer-events: none;
+      transition: opacity .25s ease;
+    }
+    .drawer-scrim.is-open { opacity: 1; pointer-events: auto; }
+
+    .drawer {
+      display: block; position: fixed; top: 0; right: 0; bottom: 0;
+      width: min(82vw, 380px); z-index: 70;
+      background: var(--color-bg);
+      transform: translateX(100%); transition: transform .28s var(--ease-out);
+      padding: 88px 32px 32px;
+      box-shadow: -12px 0 48px rgba(0,0,0,0.4);
+    }
+    .drawer.is-open { transform: translateX(0); }
+    .drawer-inner { display: flex; flex-direction: column; gap: 20px; }
+    .drawer-link {
+      font-family: var(--font-display); font-weight: 700; font-size: 24px;
+      color: var(--on-dark); text-decoration: none;
+      transition: color .15s;
+    }
+    .drawer-link:hover { color: var(--orange); }
+    .drawer-link.back { font-size: 14px; color: var(--on-dark-2); letter-spacing: 0.06em; }
+    .drawer-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--orange); color: #fff;
+      padding: 14px 22px; border-radius: 999px; text-decoration: none;
+      font-family: var(--font-display); font-weight: 600; font-size: 15px;
+      margin-top: 16px; align-self: flex-start;
+    }
+    .drawer-cta svg { width: 18px; height: 18px; }
+  }
+  @media (max-width: 1080px) {
+    /* collapse notch — solid dark bar across */
+    .site-header { background: var(--color-bg); }
+    .site-header__inner {
+      grid-template-columns: minmax(216px, auto) 1fr;
+      width: 100%; padding: 0 24px;
+    }
+    .site-header__notch { display: none; }
+    .site-header__brand-block,
+    .site-header__nav-block {
+      background: transparent;
+      border-radius: 0;
+    }
+    .site-header__brand-block::before,
+    .site-header__brand-block::after,
+    .site-header__nav-block::before,
+    .site-header__nav-block::after { display: none; }
+    .site-header__nav-block { grid-column: 2; padding-left: 0; padding-right: 0; }
+    .mission .title { display: none; }
+    .mission .sep { display: none; }
+  }
   @media (max-width: 760px) {
-    .topbar { padding: 14px 20px; }
-    .brand .bar, .mission { display: none; }
+    .mission { display: none; }
     nav a:not(.talk):not(.back) { display: none; }
+    nav { gap: 18px; font-size: 14px; }
   }
 </style>

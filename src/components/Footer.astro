@@ -1,20 +1,182 @@
 ---
+/**
+ * Pirxey footer — light cream surface with noise + radial orange glow.
+ * Ported 1:1 from AIJobIndex/pirxey-ai-mini-apps PirxeyFooter (which itself
+ * is a port of live pirxey.com footer). Cream bg matches the light-section
+ * pattern so the page ends in the same texture it lives in.
+ *
+ * Layout:
+ *   row 1: logo + address  |  contact email  |  Mike block (photo + phone + email)  |  Clutch reviews
+ *   divider
+ *   row 2: legal line
+ */
 interface Props { note?: string; }
-const { note = "" } = Astro.props;
+const { note: _note = "" } = Astro.props;
 ---
-<footer class="footer">
-  <div>Pirxey © 2026 · <a href="https://pirxey.com" target="_blank" rel="noopener">Develop &amp; Prosper.</a></div>
-  {note && <div class="right" set:html={note} />}
+<footer aria-labelledby="footer-heading" class="pirxey-footer">
+  <h2 class="visually-hidden" id="footer-heading">Pirxey footer</h2>
+  <div class="pirxey-footer__inner">
+    <div class="pirxey-footer__row">
+      <div class="pirxey-footer__brand">
+        <a href="https://pirxey.com" target="_blank" rel="noopener">
+          <img alt="Pirxey" class="brand-image" height="54" src="/brand/pirxey-logotype-dark.svg" width="203" />
+        </a>
+        <p class="address">Aleja Grunwaldzka 472,<br>80-309 Gdańsk, <span aria-hidden="true">🇵🇱</span> Poland</p>
+      </div>
+
+      <div class="block">
+        <p class="block-title">Have a question?</p>
+        <a class="block-link" href="mailto:contact@pirxey.com">contact@pirxey.com</a>
+      </div>
+
+      <div class="mike">
+        <img alt="" aria-hidden="true" class="mike-photo" height="77" src="/brand/pirxey-mike-circle.webp" width="77" />
+        <div class="block">
+          <p class="block-title">Reach out to Mike directly:</p>
+          <p class="mike-contacts">
+            <a class="block-link" href="tel:+48790359357">+48 790 359 357</a>
+            <span aria-hidden="true">/</span>
+            <a class="block-link" href="mailto:sales@pirxey.com">sales@pirxey.com</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="clutch">
+        <div class="clutch-row">
+          <div class="clutch-col">
+            <p class="clutch-label">REVIEWED ON</p>
+            <img alt="Clutch" class="clutch-logo" height="25" src="/brand/pirxey-clutch-logo.svg" />
+          </div>
+          <div class="clutch-col" style="align-items:center">
+            <img alt="5 stars" class="clutch-stars" height="14" src="/brand/pirxey-clutch-stars.svg" />
+            <p class="clutch-reviews">9 REVIEWS</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div aria-hidden="true" class="divider"></div>
+
+    <div class="legal">
+      <p>Pirxey © 2026 • All rights reserved.</p>
+      <p>Develop &amp; Prosper.</p>
+    </div>
+  </div>
 </footer>
+
 <style>
-  .footer {
-    padding: 48px 88px 40px;
-    display: flex; justify-content: space-between; align-items: center;
-    font-family: var(--font-sans); font-size: 12px; color: var(--on-dark-3);
-    border-top: 1px solid var(--line-dark); gap: 24px; flex-wrap: wrap;
+  .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+  .pirxey-footer {
+    position: relative; isolation: isolate;
+    padding-block: clamp(3.5rem, 6vw, 5rem);
+    border-radius: var(--radius-section) var(--radius-section) 0 0;
+    margin: var(--gutter) var(--gutter) 0;
+    overflow: hidden;
+    background:
+      linear-gradient(rgba(249, 249, 234, 0.96), rgba(249, 249, 234, 0.96)),
+      url("/brand/pirxey-noise-light.webp") center / 1024px 1024px,
+      var(--color-surface-warm);
+    color: var(--color-text-dark);
   }
-  .footer a { color: var(--on-dark-2); text-decoration: none; }
-  .footer a:hover { color: var(--orange); }
-  .footer .right { max-width: 680px; text-align: right; letter-spacing: 0.02em; }
-  @media (max-width: 760px) { .footer { padding: 32px 24px; flex-direction: column; } .footer .right { text-align: left; } }
+  .pirxey-footer::before {
+    content: ""; position: absolute;
+    inset: auto -2rem -4rem auto;
+    width: 48rem; height: 33rem;
+    pointer-events: none;
+    background: radial-gradient(ellipse 70% 80% at 100% 100%, rgba(255, 96, 38, 0.34), transparent 60%);
+    z-index: 0;
+  }
+
+  .pirxey-footer__inner {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; gap: 1.5rem;
+    width: min(calc(100% - 4rem), 1280px);
+    margin-inline: auto;
+  }
+
+  .pirxey-footer__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: 2rem; align-items: center;
+  }
+
+  .pirxey-footer__brand { display: flex; flex-direction: column; gap: 1rem; }
+  .pirxey-footer__brand a { line-height: 0; }
+  .brand-image { width: 203px; height: 53.64px; object-fit: contain; }
+  .address {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem; font-weight: 700; line-height: 1.3;
+    color: var(--color-text-dark-muted);
+  }
+
+  .block { display: flex; flex-direction: column; gap: 0.5rem; }
+  .block-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.5rem; font-weight: 700; line-height: 1.25;
+    color: var(--color-text-dark);
+  }
+  .block-link {
+    font-family: var(--font-display);
+    font-size: 1.25rem; font-weight: 700; line-height: 1.3;
+    color: var(--color-accent-2);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+  .block-link:hover, .block-link:focus-visible {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+  .mike-contacts {
+    display: flex; flex-wrap: wrap; column-gap: 0.4rem;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem; font-weight: 700; line-height: 1.3;
+    color: var(--color-accent-2);
+  }
+  .mike-contacts span { color: var(--color-text-dark-muted); }
+
+  .mike { display: flex; align-items: center; gap: 0.75rem; }
+  .mike-photo { width: 77px; height: 77px; border-radius: 999px; object-fit: cover; flex-shrink: 0; }
+
+  .clutch { display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end; }
+  .clutch-row { display: flex; gap: 0.5rem; align-items: flex-start; color: var(--color-text-dark); }
+  .clutch-col { display: flex; flex-direction: column; gap: 0.125rem; }
+  .clutch-label {
+    margin: 0;
+    font-family: var(--font-body);
+    font-weight: 700; font-size: 0.75rem;
+    letter-spacing: 1px; line-height: 1.4;
+  }
+  .clutch-reviews {
+    margin: 0;
+    font-family: var(--font-body);
+    font-weight: 600; font-size: 0.6875rem;     /* 11px — quieter than the 14px stars */
+    letter-spacing: 0.08em; line-height: 1.4;
+    color: var(--color-text-dark-muted);
+    text-align: center;
+  }
+  .clutch-logo { height: 25px; width: auto; }
+  .clutch-stars { height: 14px; width: auto; }
+
+  .divider { height: 1px; width: 100%; background: rgba(6, 4, 17, 0.12); }
+
+  .legal {
+    display: flex; justify-content: space-between; gap: 1.5rem;
+    font-family: var(--font-body);
+    font-weight: 700; font-size: 0.75rem; line-height: 1.33;
+    color: var(--color-text-dark-muted);
+  }
+
+  @media (max-width: 980px) {
+    .pirxey-footer__row { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .clutch { align-items: flex-start; }
+  }
+  @media (max-width: 640px) {
+    .pirxey-footer__row { grid-template-columns: 1fr; }
+    .legal { flex-direction: column; gap: 0.5rem; }
+    .clutch { align-items: flex-start; }
+  }
 </style>

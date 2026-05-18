@@ -1,0 +1,77 @@
+---
+/**
+ * MarqueeRow — endless scrolling ticker, Pirxey style.
+ * Doubles the children so the loop has no visible seam.
+ * Pauses on hover. Honors prefers-reduced-motion (stops scrolling).
+ *
+ * Use it as a moment of pace inside long briefs — e.g. between hero and
+ * the cockpit, surfacing the loud client questions the brief addresses.
+ */
+interface Props {
+  items: string[];
+  separator?: string;
+  /** seconds — lower = faster */
+  duration?: number;
+  /** "dark" sits on the page background (transparent), "light" inside a light section. */
+  tone?: "dark" | "light";
+}
+const { items, separator = "✦", duration = 48, tone = "dark" } = Astro.props;
+const doubled = [...items, ...items];
+---
+<aside class:list={["marquee", `marquee--${tone}`]} aria-hidden="true">
+  <div class="marquee-track" style={`animation-duration:${duration}s`}>
+    {doubled.map((item) => (
+      <span class="marquee-item">
+        <span set:html={item} />
+        <span class="sep" aria-hidden="true">{separator}</span>
+      </span>
+    ))}
+  </div>
+</aside>
+
+<style>
+  .marquee {
+    position: relative; overflow: hidden;
+    margin: var(--gutter); border-radius: var(--radius-card);
+    padding: 22px 0;
+    font-family: var(--font-display);
+    font-weight: 600; font-size: 15px;
+    letter-spacing: -0.005em;
+    border-block: 1px solid var(--line-dark);
+  }
+  .marquee--dark { color: var(--on-dark-2); background: transparent; }
+  .marquee--light { color: var(--color-text-dark-muted); background: transparent; border-color: rgba(6, 4, 17, 0.08); }
+  .marquee::before, .marquee::after {
+    content: ""; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2;
+    pointer-events: none;
+  }
+  /* Dark theme runs over the SpaceCanvas — fade to a *masked transparent*
+     instead of a solid color so the stars stay continuous through the edges. */
+  .marquee--dark::before  { left: 0;  background: linear-gradient(90deg, rgba(6,4,17,0.6) 0%, rgba(6,4,17,0) 100%); }
+  .marquee--dark::after   { right: 0; background: linear-gradient(270deg, rgba(6,4,17,0.6) 0%, rgba(6,4,17,0) 100%); }
+  .marquee--light::before { left: 0;  background: linear-gradient(90deg, var(--beige) 0%, rgba(249,249,234,0) 100%); }
+  .marquee--light::after  { right: 0; background: linear-gradient(270deg, var(--beige) 0%, rgba(249,249,234,0) 100%); }
+
+  .marquee-track {
+    display: inline-flex; gap: 36px;
+    white-space: nowrap;
+    animation: scroll linear infinite;
+    will-change: transform;
+  }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track { animation: none; }
+  }
+
+  .marquee-item {
+    display: inline-flex; align-items: center; gap: 36px;
+  }
+  .marquee-item :global(em) { color: var(--color-accent); font-style: italic; font-weight: 600; }
+  .marquee-item :global(strong) { color: var(--on-dark); font-weight: 700; }
+  .marquee--light .marquee-item :global(strong) { color: var(--color-text-dark); }
+  .sep { color: var(--color-accent); font-size: 12px; line-height: 1; }
+</style>

@@ -1,0 +1,83 @@
+---
+/**
+ * SistineBreak — Michelangelo-inspired transition.
+ *   The "Sistine astronaut" image from live pirxey.com Webflow CDN
+ *   (pirxey-astronauts-sistine.webp): two suited hands almost touching.
+ *
+ * Reads as a moment of meaning before a major section change
+ * (e.g. before Evidence — "the spark of insight").
+ *
+ * Props:
+ *   tone   — "dark" (transparent over SpaceCanvas) or "light" (cream surface).
+ *   caption — optional small italic line under the image.
+ */
+interface Props {
+  tone?: "dark" | "light";
+  caption?: string;
+}
+const { tone = "dark", caption } = Astro.props;
+
+// Try the AIJobIndex asset if available; otherwise fall back to the generic
+// hero astronaut so the layout still renders gracefully.
+const src = "/brand/pirxey-astronauts-sistine.webp";
+---
+<aside class:list={["sistine-break", `sistine--${tone}`]} aria-hidden="true">
+  <div class="sistine-inner">
+    <img src={src} alt="" loading="lazy" />
+    {caption && <p class="caption">{caption}</p>}
+  </div>
+</aside>
+
+<style>
+  .sistine-break {
+    position: relative; overflow: hidden;
+    margin: var(--gutter); border-radius: var(--radius-section);
+    padding: 56px 24px 80px;
+    isolation: isolate;
+  }
+  .sistine--dark { background: transparent; }
+  .sistine--light {
+    background:
+      linear-gradient(rgba(249, 249, 234, 0.94), rgba(249, 249, 234, 0.94)),
+      url("/brand/pirxey-noise-light.webp") center / 1024px 1024px,
+      var(--color-surface-warm);
+    color: var(--color-text-dark);
+  }
+  .sistine--dark::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 40% 50% at 50% 60%, rgba(255, 96, 38, 0.18), transparent 70%),
+      radial-gradient(ellipse 30% 30% at 50% 0%, rgba(255, 96, 38, 0.12), transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+  .sistine-inner {
+    position: relative; z-index: 1;
+    max-width: 920px; margin: 0 auto;
+    display: flex; flex-direction: column; align-items: center; gap: 18px;
+  }
+  .sistine-inner img {
+    width: 100%; max-width: 720px;
+    height: auto; display: block;
+    filter: drop-shadow(0 32px 80px rgba(6, 4, 17, 0.5));
+    animation: float-slow 18s ease-in-out infinite;
+    will-change: transform;
+  }
+  .sistine--light .sistine-inner img {
+    filter: drop-shadow(0 24px 60px rgba(6, 4, 17, 0.18));
+  }
+  @keyframes float-slow {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50%      { transform: translate3d(0, -10px, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sistine-inner img { animation: none; }
+  }
+  .caption {
+    margin: 0;
+    font-family: var(--font-body); font-style: italic;
+    font-size: 14px; color: var(--on-dark-3);
+    text-align: center; letter-spacing: -0.005em;
+    max-width: 520px;
+  }
+  .sistine--light .caption { color: var(--color-text-dark-muted); }
+</style>

@@ -34,6 +34,16 @@ import Cockpit from "@components/react/Cockpit.tsx";
 import SoloVsTeamCard from "@components/cards/SoloVsTeamCard.astro";
 import ForceCard from "@components/cards/ForceCard.astro";
 import EvidenceCard from "@components/cards/EvidenceCard.astro";
+import MarqueeRow from "@components/MarqueeRow.astro";
+
+<MarqueeRow items={[
+  `<em>"My client built it solo with Claude in an evening."</em>`,
+  `<em>"Why did our team spend a quarter on the same scope?"</em>`,
+  `<strong>10×?</strong> Not on a 250k LOC codebase.`,
+  `<em>"Are we just slow?"</em>`,
+  `<strong>The math is different.</strong> Drag the slider below.`,
+  `Greenfield <strong>9.4×</strong> → Enterprise <strong>1.6×</strong>.`,
+]} duration={60} />
 
 <Section
   theme="dark"
@@ -84,7 +94,7 @@ import EvidenceCard from "@components/cards/EvidenceCard.astro";
     <SoloVsTeamCard
       n="05"
       title="No compliance. No audit. No data migration."
-      solo={`Demo data. No SOC2. No GDPR scrutiny. No PII. No "what happens to 12M existing rows?".`}
+      solo={`Demo data. No SOC2 audit. No GDPR review. No real PII. No "what happens to 12M existing rows?".`}
       team="Real customer data. Audit trails. Regulator deadlines. Zero-downtime migrations. <em>This work has nothing to do with how fast the model types.</em>"
       punch={`Production has constraints that prompts can't see.`}
     />
@@ -196,8 +206,8 @@ import EvidenceCard from "@components/cards/EvidenceCard.astro";
       url="#cockpit"
     />
     <EvidenceCard
-      stat="Soft"
-      headline="skills became the hard skill."
+      stat="↑"
+      headline="Soft skills became the hard skill."
       body="The bottleneck has moved upstream: naming the constraint, describing the product intent, and knowing when to challenge the model. Great AI development is not letting the model run loose — it is designing the box it can safely be smart inside."
       source="Pirxey delivery teams"
       url="#forces"

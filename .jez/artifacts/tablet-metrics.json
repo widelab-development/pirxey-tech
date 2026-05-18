@@ -1,0 +1,66 @@
+{
+  "header": {
+    "w": 768,
+    "h": 71,
+    "top": 0,
+    "left": 0
+  },
+  "brand": {
+    "w": 216,
+    "h": 71,
+    "top": 0,
+    "left": 24
+  },
+  "mission": {
+    "w": 0,
+    "h": 0,
+    "top": 0,
+    "left": 0
+  },
+  "navBlock": {
+    "w": 504,
+    "h": 71,
+    "top": 0,
+    "left": 240
+  },
+  "navItemRows": 1,
+  "navItems": [
+    {
+      "label": "← Briefs",
+      "top": 0,
+      "width": 0
+    },
+    {
+      "label": "Cockpit",
+      "top": 0,
+      "width": 0
+    },
+    {
+      "label": "The Gap",
+      "top": 0,
+      "width": 0
+    },
+    {
+      "label": "Forces",
+      "top": 0,
+      "width": 0
+    },
+    {
+      "label": "Evidence",
+      "top": 0,
+      "width": 0
+    },
+    {
+      "label": "Let's talk",
+      "top": 0,
+      "width": 0
+    }
+  ],
+  "heroH1": {
+    "w": 670,
+    "h": 102,
+    "top": -10145,
+    "left": 48
+  },
+  "heroSubMaxWidth": 600
+}

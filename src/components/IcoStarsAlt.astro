@@ -1,0 +1,18 @@
+---
+/**
+ * Pirxey sparkle marker — four four-pointed stars in a horizontal row.
+ * Path byte-for-byte from pirxey.com's ico-stars.svg (78×34 viewBox).
+ */
+interface Props { size?: number; class?: string; }
+const { size = 78, class: className } = Astro.props;
+const height = size * (34 / 78);
+---
+<span aria-hidden="true" class:list={["ico-stars-alt", className]} style={`width:${size}px;height:${height}px`}>
+  <svg fill="currentColor" height="100%" preserveAspectRatio="xMidYMid meet" viewBox="0 0 78 34" width="100%" xmlns="http://www.w3.org/2000/svg">
+    <path d="M60.3301 0C60.3301 17.0005 60.3303 17.001 77.1426 17.001C60.3303 17.001 60.3301 17.0007 60.3301 34C60.3301 19.2965 60.3303 17.3121 49.4502 17.0439C38.5721 17.3122 38.5723 19.297 38.5723 34C38.5723 19.2967 38.572 17.3122 27.6924 17.0439C16.8138 17.3122 16.8135 19.2968 16.8135 34C16.8135 17.0006 16.8138 17.001 0 17.001C16.8138 17.001 16.8135 17.0006 16.8135 0C16.8135 14.7043 16.8139 16.6888 27.6924 16.957C38.572 16.6888 38.5723 14.7044 38.5723 0C38.5723 14.7041 38.5721 16.6887 49.4502 16.957C60.3302 16.6888 60.3301 14.7046 60.3301 0Z"/>
+  </svg>
+</span>
+<style>
+  .ico-stars-alt { display: inline-block; line-height: 0; color: var(--color-accent); }
+  .ico-stars-alt svg { display: block; }
+</style>

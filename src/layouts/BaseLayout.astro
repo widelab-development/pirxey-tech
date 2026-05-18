@@ -1,6 +1,7 @@
 ---
 import "@styles/global.css";
 import SEO from "@components/SEO.astro";
+import SpaceCanvas from "@components/react/SpaceCanvas.tsx";
 
 interface Props {
   title: string;
@@ -23,6 +24,9 @@ const props = Astro.props;
   <SEO {...props} />
 </head>
 <body>
+  {/* Pixel-faithful port of pirxey.com's animated WebGL star field.
+      Fixed at z-index -1, fills viewport, all dark sections show through. */}
+  <SpaceCanvas client:only="react" />
   <slot />
 </body>
 </html>

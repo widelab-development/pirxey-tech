@@ -23,14 +23,21 @@ const {
   missionId, publishedAt, author,
   headlineHtml, sub, stats = [],
   ctaLabel = "Open the cockpit", ctaHref = "#cockpit",
-  background = "/assets/hero-bg.png",
+  background,
 } = Astro.props;
 
 const fmtDate = publishedAt.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 ---
 
-<section class="hero" id="thesis">
-  <div class="hero-bg" style={`background-image:url('${background}')`}></div>
+<section class:list={["hero", background && "has-image-bg"]} id="thesis">
+  {background ? (
+    <div class="hero-bg" style={`background-image:url('${background}')`}></div>
+  ) : (
+    <>
+      <img class="hero-planet" src="/brand/pirxey-hero-planet.webp" alt="" aria-hidden="true" loading="eager" />
+      <img class="hero-astronaut" src="/brand/pirxey-hero-astronaut.webp" alt="" aria-hidden="true" loading="eager" />
+    </>
+  )}
   <div class="hero-noise"></div>
 
   <div class="hero-inner">
@@ -40,11 +47,10 @@ const fmtDate = publishedAt.toLocaleDateString("en-US", { year: "numeric", month
 
     <div class="hero-eyebrow reveal">
       <span class="he-tag"><span class="dot"></span>Mission Brief · <strong>{missionId}</strong></span>
-      <span class="he-sep">/</span>
+      <span class="he-sep">—</span>
       <time datetime={publishedAt.toISOString().slice(0, 10)}>{fmtDate}</time>
-      <span class="he-sep">/</span>
-      <span class="he-author">by <strong>{author}</strong></span>
     </div>
+    <p class="hero-byline reveal">by <strong>{author}</strong></p>
 
     <h1 class="reveal delay-1" set:html={headlineHtml} />
 
@@ -71,19 +77,60 @@ const fmtDate = publishedAt.toLocaleDateString("en-US", { year: "numeric", month
 <style>
   .hero {
     position: relative; overflow: hidden;
-    border-radius: 0 0 var(--radius-section) var(--radius-section);
-    background: var(--beige); min-height: 660px;
+    min-height: 720px;
+    /* Default base = cream (used for astronaut/planet variant). */
+    background: var(--beige);
   }
+  /* Image-bg variant (per-brief): dark base + full bleed image + dark gradient.
+     No bottom radius so the hero flows seamlessly into the next dark section. */
+  .hero.has-image-bg { background: var(--color-bg); border-radius: 0; }
+  /* Astronaut/planet variant keeps the bottom radius — cream → dark transition. */
+  .hero:not(.has-image-bg) { border-radius: 0 0 var(--radius-section) var(--radius-section); }
+
   .hero-bg { position: absolute; inset: 0; background-size: cover; background-position: center right; z-index: 1; }
   .hero-bg:after {
     content: ""; position: absolute; inset: 0;
-    background: linear-gradient(90deg, rgba(6, 4, 17, 0.92) 0%, rgba(6, 4, 17, 0.78) 35%, rgba(6, 4, 17, 0.15) 70%, rgba(6, 4, 17, 0) 100%);
+    /* Heavy dark left (legible H1), backs off to ~10% on the right so the
+       astronaut image stays visible. Bottom gradient seams into next dark section. */
+    background:
+      linear-gradient(90deg, rgba(6, 4, 17, 0.94) 0%, rgba(6, 4, 17, 0.78) 40%, rgba(6, 4, 17, 0.2) 75%, rgba(6, 4, 17, 0.1) 100%),
+      linear-gradient(180deg, rgba(6, 4, 17, 0) 65%, rgba(6, 4, 17, 0.9) 100%);
   }
+
+  /* Live pirxey.com hero composition — astronaut + planet on cream */
+  .hero-planet {
+    position: absolute;
+    width: 64.5rem; height: auto;
+    bottom: 0; right: clamp(-30rem, 25vw - 30rem, 10rem);
+    z-index: 1; pointer-events: none;
+    user-select: none;
+  }
+  /* Wrap-divs would be nicer but it's a bare <img>. drop-shadow triggered
+     GPU stalls — switch to a softer 2-layer drop-shadow at half intensity. */
+  .hero-astronaut {
+    position: absolute;
+    width: 37rem; height: auto;
+    top: 8.5rem; right: clamp(4rem, 23.33vw - 17rem, 1000rem);
+    z-index: 3; pointer-events: none;
+    user-select: none;
+    filter: drop-shadow(0 18px 28px rgba(6, 4, 17, 0.25));
+    animation: float 9s ease-in-out infinite;
+    will-change: transform;
+  }
+  @keyframes float {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+    33%  { transform: translate3d(6px, -12px, 0) rotate(-0.4deg); }
+    66%  { transform: translate3d(-3px, -5px, 0) rotate(0.3deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-astronaut { animation: none; }
+  }
+
   .hero-noise {
     position: absolute; inset: 0; z-index: 2;
-    background-image: url("/assets/noise-light.png");
+    background-image: url("/brand/pirxey-noise-light.webp");
     background-size: 512px 512px; background-repeat: repeat;
-    opacity: 0.18; mix-blend-mode: overlay;
+    opacity: 0.22; mix-blend-mode: multiply;
   }
   .hero-inner {
     position: relative; z-index: 5;
@@ -97,11 +144,13 @@ const fmtDate = publishedAt.toLocaleDateString("en-US", { year: "numeric", month
     filter: invert(48%) sepia(85%) saturate(2543%) hue-rotate(346deg) brightness(101%) contrast(101%);
   }
 
+  /* Mission Brief identifier — primary pill (id + date). Author moves below
+     as a softer secondary line. */
   .hero-eyebrow {
     display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap;
     font-family: var(--font-sans); font-weight: 600; font-size: 12px;
     letter-spacing: 0.14em; text-transform: uppercase; color: var(--on-dark-2);
-    margin-bottom: 32px; padding: 8px 16px;
+    margin-bottom: 10px; padding: 8px 16px;
     border: 1px solid var(--line-dark-2); border-radius: var(--radius-pill);
     background: rgba(249, 249, 234, 0.04);
   }
@@ -113,9 +162,14 @@ const fmtDate = publishedAt.toLocaleDateString("en-US", { year: "numeric", month
   }
   .he-tag strong { font-variant-numeric: tabular-nums; }
   .he-sep { color: var(--on-dark-3); opacity: 0.7; }
-  .he-author { text-transform: none; font-style: italic; font-family: var(--font-body); font-weight: 500; letter-spacing: 0; color: var(--on-dark-2); }
-  .he-author strong { font-style: normal; font-weight: 600; color: var(--on-dark); font-family: var(--font-sans); }
   time { font-variant-numeric: tabular-nums; }
+  .hero-byline {
+    margin: 0 0 24px;
+    font-family: var(--font-body); font-style: italic; font-weight: 500;
+    font-size: 14px; line-height: 1.4; letter-spacing: -0.005em;
+    color: var(--on-dark-3);
+  }
+  .hero-byline strong { font-style: normal; font-weight: 600; color: var(--on-dark-2); font-family: var(--font-sans); }
 
   .hero :global(h1) {
     font-family: var(--font-sans); font-weight: 700;
@@ -125,9 +179,9 @@ const fmtDate = publishedAt.toLocaleDateString("en-US", { year: "numeric", month
   }
   .hero :global(h1 .strike) { position: relative; display: inline-block; color: var(--on-dark-2); }
   .hero :global(h1 .strike:after) {
-    content: ""; position: absolute; left: -4%; right: -4%; top: 52%;
+    content: ""; position: absolute; left: -4%; right: -4%; top: 48%;
     height: 6px; background: var(--orange);
-    transform: rotate(-4deg); border-radius: 3px;
+    transform: rotate(-4deg) translateY(-50%); border-radius: 3px;
   }
   .hero :global(h1 em) { font-style: normal; color: var(--orange); }
 
@@ -143,29 +197,44 @@ const fmtDate = publishedAt.toLocaleDateString("en-US", { year: "numeric", month
     gap: 16px; width: 100%; max-width: 880px; margin-bottom: 48px;
   }
   .stat-card {
-    background: rgba(249, 249, 234, 0.03);
-    border: 1px solid var(--line-dark); border-radius: var(--radius-card);
+    background: rgba(6, 4, 17, 0.55);
+    border: 1px solid var(--line-dark-2); border-radius: var(--radius-card);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
     padding: 24px 28px; display: flex; flex-direction: column; gap: 8px;
   }
-  .stat-card .v { font-family: var(--font-sans); font-weight: 700; font-size: 56px; line-height: 1; letter-spacing: -0.02em; }
+  .stat-card .v {
+    font-family: var(--font-sans); font-weight: 700; font-size: 56px;
+    line-height: 1; letter-spacing: -0.02em;
+    text-shadow: 0 2px 16px rgba(6, 4, 17, 0.6);
+  }
   .stat-up   .v { color: var(--orange); }
-  .stat-mid  .v { color: var(--amber); }
-  .stat-down .v { color: var(--on-dark-2); }
-  .stat-card .l { font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--on-dark-3); font-weight: 500; }
+  .stat-mid  .v { color: #FFC56B; }     /* warmer amber for better cream-bg contrast */
+  .stat-down .v { color: #F2F2DC; }      /* near-cream instead of muted gray */
+  .stat-card .l { font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--on-dark-2); font-weight: 500; }
 
   .hero-cta {
     display: inline-flex; align-items: center; gap: 10px;
     padding: 16px 26px; border-radius: var(--radius-pill);
     background: var(--orange); color: #fff; text-decoration: none;
     font-family: var(--font-sans); font-weight: 600; font-size: 15px;
-    transition: background 0.15s, transform 0.15s;
+    box-shadow: 0 6px 20px -6px rgba(255, 96, 38, 0.55);
+    transition: background 0.18s var(--ease-out), transform 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out);
   }
-  .hero-cta:hover { background: var(--orange-hover); transform: translateY(-1px); }
+  .hero-cta:hover {
+    background: var(--orange-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 38px -10px rgba(255, 96, 38, 0.7);
+  }
   .hero-cta svg { width: 16px; height: 16px; }
 
   @media (max-width: 1100px) {
     .hero-inner { padding: 110px 48px 72px; }
     .hero-stats { grid-template-columns: 1fr 1fr; }
+  }
+  /* Below 900px the astronaut + planet are bigger than the viewport and
+     overlap the H1. Hide them — hero is dark-image (or solid dark) only. */
+  @media (max-width: 900px) {
+    .hero-planet, .hero-astronaut { display: none; }
   }
   @media (max-width: 760px) {
     .hero-inner { padding: 96px 24px 64px; }

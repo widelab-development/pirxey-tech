@@ -1,0 +1,41 @@
+---
+/**
+ * Vertical EXPLORE indicator on the hero's left edge.
+ * Arrow SVG byte-for-byte from pirxey.com's .prx-hero_arrow (viewBox 58×17).
+ * Container rotates 90° so the arrow points DOWN.
+ */
+interface Props { href?: string; }
+const { href = "#cockpit" } = Astro.props;
+---
+<a aria-hidden="true" tabindex="-1" class="hero-explore" href={href}>
+  <span aria-hidden="true" class="hero-explore__arrow">
+    <svg fill="none" height="100%" preserveAspectRatio="xMidYMid meet" viewBox="0 0 58 17" width="100%" xmlns="http://www.w3.org/2000/svg">
+      <rect x="57.7578" y="8.00391" width="1.5" height="1.5" rx="0.75" transform="rotate(90 57.7578 8.00391)" fill="currentColor"/>
+      <rect x="52.7578" y="8.00391" width="1.5" height="1.5" rx="0.75" transform="rotate(90 52.7578 8.00391)" fill="currentColor"/>
+      <rect x="47.7578" y="8.00391" width="1.5" height="1.5" rx="0.75" transform="rotate(90 47.7578 8.00391)" fill="currentColor"/>
+      <path d="M40.2578 8.01171L2.87877 8.01171L6.29907 4.30338L5.33104 3.25391L1.50862 7.39788C0.802084 8.16385 0.802083 9.34396 1.50862 10.1099L5.33104 14.2539L6.29907 13.2044L2.87877 9.49611L40.2578 9.49611L40.2578 8.01171Z" fill="currentColor"/>
+    </svg>
+  </span>
+  <span class="hero-explore__text">Explore</span>
+</a>
+<style>
+  .hero-explore {
+    position: absolute;
+    left: 56px; top: 50%;
+    transform: translateY(-50%) rotate(90deg) translateX(-50%);
+    transform-origin: left center;
+    display: inline-flex; align-items: center; gap: 14px;
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--color-text-dark-muted);
+    text-decoration: none; z-index: 6;
+    transition: color 0.18s;
+  }
+  .hero-explore:hover { color: var(--color-accent-2); }
+  .hero-explore__arrow {
+    display: inline-block; width: 58px; height: 17px;
+    color: currentColor;
+  }
+  .hero-explore__arrow svg { width: 100%; height: 100%; display: block; }
+  @media (max-width: 1100px) { .hero-explore { display: none; } }
+</style>

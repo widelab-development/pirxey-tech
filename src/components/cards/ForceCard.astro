@@ -3,7 +3,13 @@ interface Props { n: string; title: string; stat: string; body: string; cite: st
 const { n, title, stat, body, cite } = Astro.props;
 ---
 <article class="factor-card">
-  <div class="factor-top"><span class="n">{n}</span><span class="stat">{stat}</span></div>
+  <div class="factor-top">
+    <div class="factor-id">
+      <span class="bullet" aria-hidden="true"></span>
+      <span class="n">{n}</span>
+    </div>
+    <span class="stat">{stat}</span>
+  </div>
   <h3 class="title">{title}</h3>
   <p class="body" set:html={body} />
   <div class="cite">— {cite}</div>
@@ -13,16 +19,79 @@ const { n, title, stat, body, cite } = Astro.props;
   .factor-card {
     background: rgba(249, 249, 234, 0.03);
     border: 1px solid var(--line-dark);
-    border-radius: var(--radius-card); padding: 28px;
-    display: flex; flex-direction: column; gap: 14px;
-    transition: border-color 0.2s, transform 0.2s;
+    border-radius: var(--radius-card);
+    padding: 32px;
+    display: flex; flex-direction: column; gap: 16px;
+    transition: border-color 0.2s, transform 0.2s, background 0.2s;
+    position: relative; overflow: hidden;
   }
-  .factor-card:hover { border-color: rgba(255, 96, 38, 0.32); transform: translateY(-2px); }
-  .factor-top { display: flex; justify-content: space-between; align-items: baseline; }
-  .n { font-family: var(--font-sans); font-size: 11px; color: var(--on-dark-3); letter-spacing: 0.1em; font-weight: 600; }
-  .stat { font-family: var(--font-sans); font-size: 24px; color: var(--orange); font-weight: 700; letter-spacing: -0.01em; }
-  .title { font-family: var(--font-sans); font-size: 22px; line-height: 1.25; font-weight: 700; letter-spacing: -0.01em; margin: 0; color: var(--on-dark); }
-  .body { color: var(--on-dark-2); font-size: 15px; line-height: 1.6; margin: 0; }
+  .factor-card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+    opacity: 0.5; transition: opacity 0.2s;
+  }
+  .factor-card:hover {
+    border-color: rgba(255, 96, 38, 0.42);
+    transform: translateY(-2px);
+    background: rgba(255, 96, 38, 0.04);
+  }
+  .factor-card:hover::before { opacity: 1; }
+
+  /* Pirxey-style numeric badge — big orange display, like a chapter mark.
+     Stat may be long ("Review grows 1.7× faster") — let it wrap below the
+     numeral on tight cards instead of competing for the same row. */
+  .factor-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+  .factor-id {
+    display: inline-flex; align-items: center; gap: 12px;
+    color: var(--color-accent); flex-shrink: 0;
+  }
+  .factor-id .bullet {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--color-accent);
+    box-shadow: 0 0 12px var(--color-accent);
+    flex-shrink: 0;
+  }
+  .factor-id .n {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 44px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--color-accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1.2;
+    color: var(--on-dark-2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: right;
+    max-width: 60%;
+  }
+
+  .title {
+    font-family: var(--font-display); font-size: 22px;
+    line-height: 1.25; font-weight: 700; letter-spacing: -0.014em;
+    margin: 8px 0 0; color: var(--on-dark);
+    text-wrap: balance;
+  }
+  .body {
+    color: var(--on-dark-2); font-size: 15px; line-height: 1.6; margin: 0;
+  }
   .body :global(strong) { color: var(--on-dark); font-weight: 600; }
-  .cite { font-family: var(--font-sans); font-size: 11px; color: var(--on-dark-3); border-top: 1px dashed var(--line-dark); padding-top: 12px; margin-top: auto; letter-spacing: 0.02em; }
+  .cite {
+    font-family: var(--font-display); font-size: 11px;
+    color: var(--on-dark-3);
+    border-top: 1px dashed var(--line-dark);
+    padding-top: 14px; margin-top: auto;
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 540px) {
+    .factor-id .n { font-size: 36px; }
+    .stat { font-size: 11px; }
+  }
 </style>

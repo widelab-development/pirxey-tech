@@ -33,14 +33,15 @@ const rest = briefs.slice(1);
     ctaHref="https://pirxey.com"
   />
 
-  {/* HERO — Pirxey AI LP composition */}
+  {/* HERO — live pirxey.com composition: cream + astronaut + planet */}
   <section class="reg-hero">
-    <div class="hero-bg" style={`background-image:url('/assets/hero-bg.png')`}></div>
+    <img class="hero-planet" src="/brand/pirxey-hero-planet.webp" alt="" aria-hidden="true" loading="eager" />
+    <img class="hero-astronaut" src="/brand/pirxey-hero-astronaut.webp" alt="" aria-hidden="true" loading="eager" />
     <div class="hero-noise"></div>
 
     <div class="hero-inner">
       <div class="hero-stars reveal" aria-hidden="true">
-        <img src="/assets/ico-stars-alt.svg" alt="" width="64" height="64" />
+        <img src="/brand/pirxey-stars-icon.svg" alt="" width="56" height="56" />
       </div>
 
       <div class="hero-eyebrow reveal">
@@ -206,22 +207,41 @@ const rest = briefs.slice(1);
 </BaseLayout>
 
 <style>
-  /* ───────────── HERO (mirrors Hero.astro, registry-tuned) ───────────── */
+  /* ───────────── HERO — live pirxey.com (cream + astronaut + planet) ───────────── */
   .reg-hero {
     position: relative; overflow: hidden;
     border-radius: 0 0 var(--radius-section) var(--radius-section);
-    background: var(--beige); min-height: 660px;
+    background: var(--color-surface-warm);
+    min-height: 720px;
   }
-  .hero-bg { position: absolute; inset: 0; background-size: cover; background-position: center right; z-index: 1; }
-  .hero-bg:after {
-    content: ""; position: absolute; inset: 0;
-    background: linear-gradient(90deg, rgba(6, 4, 17, 0.92) 0%, rgba(6, 4, 17, 0.78) 35%, rgba(6, 4, 17, 0.15) 70%, rgba(6, 4, 17, 0) 100%);
+  .hero-planet {
+    position: absolute;
+    width: 64.5rem; height: auto;
+    bottom: 0; right: clamp(-30rem, 25vw - 30rem, 10rem);
+    z-index: 1; pointer-events: none; user-select: none;
+  }
+  .hero-astronaut {
+    position: absolute;
+    width: 37rem; height: auto;
+    top: 8.5rem; right: clamp(4rem, 23.33vw - 17rem, 1000rem);
+    z-index: 3; pointer-events: none; user-select: none;
+    filter: drop-shadow(0 24px 60px rgba(6, 4, 17, 0.35));
+    animation: float 12s ease-in-out infinite;
+    will-change: transform;
+  }
+  @keyframes float {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+    33%  { transform: translate3d(8px, -18px, 0) rotate(-0.6deg); }
+    66%  { transform: translate3d(-4px, -8px, 0) rotate(0.4deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-astronaut { animation: none; }
   }
   .hero-noise {
     position: absolute; inset: 0; z-index: 2;
-    background-image: url("/assets/noise-light.png");
+    background-image: url("/brand/pirxey-noise-light.webp");
     background-size: 512px 512px; background-repeat: repeat;
-    opacity: 0.18; mix-blend-mode: overlay;
+    opacity: 0.22; mix-blend-mode: multiply;
   }
   .hero-inner {
     position: relative; z-index: 5;
@@ -229,52 +249,50 @@ const rest = briefs.slice(1);
     padding: 144px 80px 96px;
     display: flex; flex-direction: column; align-items: flex-start;
   }
-  .hero-stars { width: 64px; height: 64px; margin-bottom: 28px; }
-  .hero-stars img {
-    width: 100%; height: 100%;
-    filter: invert(48%) sepia(85%) saturate(2543%) hue-rotate(346deg) brightness(101%) contrast(101%);
-  }
+  .hero-stars { width: 56px; height: 56px; margin-bottom: 28px; }
+  .hero-stars img { width: 100%; height: 100%; }
 
   .hero-eyebrow {
     display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap;
-    font-family: var(--font-sans); font-weight: 600; font-size: 12px;
-    letter-spacing: 0.14em; text-transform: uppercase; color: var(--on-dark-2);
+    font-family: var(--font-display); font-weight: 600; font-size: 12px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-dark-muted);
     margin-bottom: 32px; padding: 8px 16px;
-    border: 1px solid var(--line-dark-2); border-radius: var(--radius-pill);
-    background: rgba(249, 249, 234, 0.04);
+    border: 1px solid var(--color-border-dark); border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.5);
   }
-  .he-tag { display: inline-flex; align-items: center; gap: 8px; color: var(--orange); }
-  .he-tag .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 8px var(--orange); animation: beacon 2s ease-in-out infinite; }
-  .he-sep { color: var(--on-dark-3); opacity: 0.7; }
-  .he-author { text-transform: none; font-style: italic; font-family: var(--font-body); font-weight: 500; letter-spacing: 0; color: var(--on-dark-2); }
-  .he-author strong { font-style: normal; font-weight: 600; color: var(--on-dark); font-family: var(--font-sans); }
+  .he-tag { display: inline-flex; align-items: center; gap: 8px; color: var(--color-accent-2); }
+  .he-tag .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent-2); box-shadow: 0 0 8px var(--color-accent); animation: beacon 2s ease-in-out infinite; }
+  .he-sep { color: var(--color-text-dark-muted); opacity: 0.5; }
+  .he-author { text-transform: none; font-style: italic; font-family: var(--font-body); font-weight: 500; letter-spacing: 0; color: var(--color-text-dark-muted); }
+  .he-author strong { font-style: normal; font-weight: 600; color: var(--color-text-dark); font-family: var(--font-display); }
 
   .reg-hero h1 {
-    font-family: var(--font-sans); font-weight: 700;
-    font-size: clamp(48px, 6.8vw, 80px); line-height: 1.04;
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(48px, 6.4vw, 72px); line-height: 1.04;
     letter-spacing: -0.02em; margin: 0 0 28px;
-    color: var(--on-dark); max-width: 860px; text-wrap: balance;
+    color: var(--color-text-dark); max-width: 720px; text-wrap: balance;
   }
-  .reg-hero h1 em { font-style: normal; color: var(--orange); }
+  .reg-hero h1 em { font-style: normal; color: var(--color-accent-2); }
   .hero-sub {
     font-family: var(--font-body); font-size: 19px; line-height: 1.55;
-    color: var(--on-dark-2); margin: 0 0 16px; max-width: 720px;
+    color: var(--color-text-dark-muted); margin: 0 0 16px; max-width: 620px;
     letter-spacing: -0.005em;
   }
-  .hero-sub strong { color: var(--on-dark); font-weight: 600; }
+  .hero-sub strong { color: var(--color-text-dark); font-weight: 600; }
   .hero-kicker {
     font-family: var(--font-body); font-size: 16px; line-height: 1.5;
-    color: var(--on-dark-3); margin: 0 0 40px; max-width: 640px;
+    color: var(--color-text-dark-muted); margin: 0 0 40px; max-width: 560px;
   }
-  .hero-kicker em { font-style: italic; color: var(--orange); }
+  .hero-kicker em { font-style: italic; color: var(--color-accent-2); font-weight: 500; }
   .hero-cta {
     display: inline-flex; align-items: center; gap: 10px;
     padding: 16px 26px; border-radius: var(--radius-pill);
-    background: var(--orange); color: #fff; text-decoration: none;
-    font-family: var(--font-sans); font-weight: 600; font-size: 15px;
-    transition: background 0.15s, transform 0.15s;
+    background: var(--color-accent); color: #fff; text-decoration: none;
+    font-family: var(--font-display); font-weight: 600; font-size: 15px;
+    box-shadow: 0 8px 24px -8px rgba(255, 96, 38, 0.6);
+    transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
   }
-  .hero-cta:hover { background: var(--orange-hover); transform: translateY(-1px); }
+  .hero-cta:hover { background: var(--color-accent-strong); transform: translateY(-1px); box-shadow: 0 12px 32px -8px rgba(255, 96, 38, 0.7); }
 
   /* ───────────── FEATURED CARD ───────────── */
   .featured-card {
@@ -446,6 +464,11 @@ const rest = briefs.slice(1);
     .hero-inner { padding: 120px 48px 80px; }
     .featured-card { grid-template-columns: 1fr; gap: 32px; padding: 36px; }
     .about-grid { grid-template-columns: 1fr; }
+  }
+  /* Astronaut + planet are 37rem / 64.5rem — bigger than mobile viewport and
+     overlap the H1. Hide on small screens. */
+  @media (max-width: 900px) {
+    .hero-planet, .hero-astronaut { display: none; }
   }
   @media (max-width: 760px) {
     .hero-inner { padding: 100px 24px 64px; }
