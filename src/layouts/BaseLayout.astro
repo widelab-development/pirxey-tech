@@ -1,0 +1,28 @@
+---
+import "@styles/global.css";
+import SEO from "@components/SEO.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  type?: "website" | "article";
+  publishedAt?: Date;
+  updatedAt?: Date;
+  author?: { name: string; url?: string };
+  tags?: string[];
+  jsonLd?: Record<string, any>;
+  noindex?: boolean;
+}
+const props = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <SEO {...props} />
+</head>
+<body>
+  <slot />
+</body>
+</html>

@@ -1,0 +1,78 @@
+/**
+ * Pirxey design tokens — sourced from
+ * Figma "Website" file (4Xir9bcCZJRNsMU6OJfzOp), Colors & Typography pages.
+ * Single source of truth for the brand on pirxey.tech.
+ */
+:root {
+  /* surfaces — dark */
+  --bg: #060411;          /* dark-300 — hero, cover, footer */
+  --bg-2: #1F1F1F;        /* dark-200 — standard dark sections */
+  --bg-3: #2E2E2E;        /* dark-100 — card bg on dark */
+
+  /* surfaces — light */
+  --beige: #F9F9EA;       /* beige-100 — primary cream */
+  --beige-2: #E6E6C9;     /* beige-200 — hero/cover light */
+  --beige-3: #E9DBA1;     /* beige-300 — accent on light */
+
+  /* accent — orange family */
+  --orange: #FF6026;          /* primary */
+  --orange-hover: #E64E14;    /* primary-hover */
+  --orange-muted: #E16C43;    /* lighter overlay */
+  --orange-overlay: #D44E1A;  /* accent-on-light */
+
+  /* secondary */
+  --blue: #3698FA;
+  --blue-deep: #1A7FE8;
+  --amber: #FFA740;
+
+  /* text — on dark */
+  --on-dark: #F9F9EA;
+  --on-dark-2: #BBBBB0;
+  --on-dark-3: #7D7C7B;
+
+  /* text — on light */
+  --on-light: #060411;
+  --on-light-2: #7D7C7B;
+  --on-light-3: #B8B8A8;
+
+  /* lines */
+  --line-dark: rgba(249, 249, 234, 0.08);
+  --line-dark-2: rgba(249, 249, 234, 0.16);
+  --line-light: #D4D4C7;
+  --line-light-2: #E6E6D8;
+
+  /* typography */
+  --font-sans: "Space Grotesk", system-ui, -apple-system, sans-serif;
+  --font-body: "Fira Sans", "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* type scale (from Figma typography tokens) */
+  --display: 72px / 76px var(--font-sans);  /* shorthand: size/line font */
+  --h1-size: 56px; --h1-lh: 60px; --h1-ls: -0.02em;
+  --h2-size: 40px; --h2-lh: 44px; --h2-ls: -0.018em;
+  --h3-size: 32px; --h3-lh: 40px; --h3-ls: -0.014em;
+  --h4-size: 24px; --h4-lh: 30px;
+  --h5-size: 20px; --h5-lh: 26px;
+  --body-lg: 18px; --body-lg-lh: 28px;
+  --body-md: 16px; --body-md-lh: 26px;
+  --meta:   14px; --meta-lh:   20px;
+  --caption:12px; --caption-lh:16px;
+  --label:  10px; --label-lh:  12px; --label-ls: 0.08em;
+
+  /* radii / spacing */
+  --radius-section: 24px;
+  --radius-card: 14px;
+  --radius-pill: 999px;
+  --pad-x: 80px;
+  --pad-x-md: 48px;
+  --pad-x-sm: 24px;
+  --max-w: 1280px;
+  --gutter: 8px;
+  --section-y: 88px;
+  --section-y-md: 72px;
+  --section-y-sm: 56px;
+
+  /* motion */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}

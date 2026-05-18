@@ -1,0 +1,54 @@
+@import "./tokens.css";
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--on-dark);
+  font-family: var(--font-body);
+  font-size: var(--body-md);
+  line-height: 1.625;
+  letter-spacing: -0.1px;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+a { color: inherit; }
+img, svg { display: block; max-width: 100%; }
+
+/* shared utility — noise + glow ambient */
+.noise {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.4; mix-blend-mode: overlay; z-index: 1;
+}
+.glow-orange {
+  position: absolute; width: 760px; height: 659px;
+  background: radial-gradient(ellipse at center, rgba(255, 96, 38, 0.42), transparent 60%);
+  filter: blur(80px); pointer-events: none; opacity: 0.7;
+}
+.glow-orange.tl { top: -200px; left: -260px; }
+.glow-orange.br { bottom: -200px; right: -200px; }
+
+/* reveal animations */
+.reveal { opacity: 0; transform: translateY(18px); animation: rise 0.8s var(--ease-out) forwards; }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+@keyframes rise { to { opacity: 1; transform: translateY(0); } }
+
+.scroll-reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out); }
+.scroll-reveal.in { opacity: 1; transform: translateY(0); }
+
+@keyframes beacon {
+  0%, 100% { opacity: 0.5; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+/* shared content grids for Mission Brief sections */
+.solo-grid     { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 48px; }
+.factors-grid  { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; margin-top: 48px; }
+.research-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; margin-top: 48px; }
+@media (max-width: 760px) { .solo-grid { grid-template-columns: 1fr; } }

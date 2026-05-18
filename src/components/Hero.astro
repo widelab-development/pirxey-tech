@@ -1,0 +1,174 @@
+---
+/**
+ * Hero — Pirxey "AI LP" style hero. Image background with dark gradient,
+ * noise overlay, eyebrow with mission metadata, big H1, sub, stat row.
+ */
+interface Stat { value: string; label: string; tone?: "up" | "mid" | "down"; }
+
+interface Props {
+  missionId: string;
+  publishedAt: Date;
+  author: string;
+  /** HTML allowed for inline em / strike highlights. */
+  headlineHtml: string;
+  sub: string;
+  stats?: Stat[];
+  ctaLabel?: string;
+  ctaHref?: string;
+  /** Optional override of /public path for hero background. */
+  background?: string;
+}
+
+const {
+  missionId, publishedAt, author,
+  headlineHtml, sub, stats = [],
+  ctaLabel = "Open the cockpit", ctaHref = "#cockpit",
+  background = "/assets/hero-bg.png",
+} = Astro.props;
+
+const fmtDate = publishedAt.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+---
+
+<section class="hero" id="thesis">
+  <div class="hero-bg" style={`background-image:url('${background}')`}></div>
+  <div class="hero-noise"></div>
+
+  <div class="hero-inner">
+    <div class="hero-stars reveal" aria-hidden="true">
+      <img src="/assets/ico-stars-alt.svg" alt="" width="64" height="64" />
+    </div>
+
+    <div class="hero-eyebrow reveal">
+      <span class="he-tag"><span class="dot"></span>Mission Brief · <strong>{missionId}</strong></span>
+      <span class="he-sep">/</span>
+      <time datetime={publishedAt.toISOString().slice(0, 10)}>{fmtDate}</time>
+      <span class="he-sep">/</span>
+      <span class="he-author">by <strong>{author}</strong></span>
+    </div>
+
+    <h1 class="reveal delay-1" set:html={headlineHtml} />
+
+    <p class="hero-sub reveal delay-2">{sub}</p>
+
+    {stats.length > 0 && (
+      <div class="hero-stats reveal delay-3">
+        {stats.map(s => (
+          <div class={`stat-card stat-${s.tone ?? "mid"}`}>
+            <div class="v">{s.value}</div>
+            <div class="l">{s.label}</div>
+          </div>
+        ))}
+      </div>
+    )}
+
+    <a href={ctaHref} class="hero-cta">
+      <span>{ctaLabel}</span>
+      <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+    </a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative; overflow: hidden;
+    border-radius: 0 0 var(--radius-section) var(--radius-section);
+    background: var(--beige); min-height: 660px;
+  }
+  .hero-bg { position: absolute; inset: 0; background-size: cover; background-position: center right; z-index: 1; }
+  .hero-bg:after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgba(6, 4, 17, 0.92) 0%, rgba(6, 4, 17, 0.78) 35%, rgba(6, 4, 17, 0.15) 70%, rgba(6, 4, 17, 0) 100%);
+  }
+  .hero-noise {
+    position: absolute; inset: 0; z-index: 2;
+    background-image: url("/assets/noise-light.png");
+    background-size: 512px 512px; background-repeat: repeat;
+    opacity: 0.18; mix-blend-mode: overlay;
+  }
+  .hero-inner {
+    position: relative; z-index: 5;
+    max-width: 1280px; margin: 0 auto;
+    padding: 132px 80px 88px;
+    display: flex; flex-direction: column; align-items: flex-start;
+  }
+  .hero-stars { width: 64px; height: 64px; margin-bottom: 28px; }
+  .hero-stars img {
+    width: 100%; height: 100%;
+    filter: invert(48%) sepia(85%) saturate(2543%) hue-rotate(346deg) brightness(101%) contrast(101%);
+  }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    font-family: var(--font-sans); font-weight: 600; font-size: 12px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--on-dark-2);
+    margin-bottom: 32px; padding: 8px 16px;
+    border: 1px solid var(--line-dark-2); border-radius: var(--radius-pill);
+    background: rgba(249, 249, 234, 0.04);
+  }
+  .he-tag { display: inline-flex; align-items: center; gap: 8px; color: var(--orange); }
+  .he-tag .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--orange); box-shadow: 0 0 8px var(--orange);
+    animation: beacon 2s ease-in-out infinite;
+  }
+  .he-tag strong { font-variant-numeric: tabular-nums; }
+  .he-sep { color: var(--on-dark-3); opacity: 0.7; }
+  .he-author { text-transform: none; font-style: italic; font-family: var(--font-body); font-weight: 500; letter-spacing: 0; color: var(--on-dark-2); }
+  .he-author strong { font-style: normal; font-weight: 600; color: var(--on-dark); font-family: var(--font-sans); }
+  time { font-variant-numeric: tabular-nums; }
+
+  .hero :global(h1) {
+    font-family: var(--font-sans); font-weight: 700;
+    font-size: clamp(48px, 6.4vw, 72px); line-height: 1.04;
+    letter-spacing: -0.02em; margin: 0 0 28px;
+    color: var(--on-dark); max-width: 820px; text-wrap: balance;
+  }
+  .hero :global(h1 .strike) { position: relative; display: inline-block; color: var(--on-dark-2); }
+  .hero :global(h1 .strike:after) {
+    content: ""; position: absolute; left: -4%; right: -4%; top: 52%;
+    height: 6px; background: var(--orange);
+    transform: rotate(-4deg); border-radius: 3px;
+  }
+  .hero :global(h1 em) { font-style: normal; color: var(--orange); }
+
+  .hero-sub {
+    font-family: var(--font-body); font-size: 18px; line-height: 1.55;
+    color: var(--on-dark-2); margin: 0 0 48px; max-width: 600px;
+    letter-spacing: -0.005em;
+  }
+  .hero-sub :global(strong) { color: var(--on-dark); font-weight: 600; }
+
+  .hero-stats {
+    display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr));
+    gap: 16px; width: 100%; max-width: 880px; margin-bottom: 48px;
+  }
+  .stat-card {
+    background: rgba(249, 249, 234, 0.03);
+    border: 1px solid var(--line-dark); border-radius: var(--radius-card);
+    padding: 24px 28px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .stat-card .v { font-family: var(--font-sans); font-weight: 700; font-size: 56px; line-height: 1; letter-spacing: -0.02em; }
+  .stat-up   .v { color: var(--orange); }
+  .stat-mid  .v { color: var(--amber); }
+  .stat-down .v { color: var(--on-dark-2); }
+  .stat-card .l { font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--on-dark-3); font-weight: 500; }
+
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 26px; border-radius: var(--radius-pill);
+    background: var(--orange); color: #fff; text-decoration: none;
+    font-family: var(--font-sans); font-weight: 600; font-size: 15px;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .hero-cta:hover { background: var(--orange-hover); transform: translateY(-1px); }
+  .hero-cta svg { width: 16px; height: 16px; }
+
+  @media (max-width: 1100px) {
+    .hero-inner { padding: 110px 48px 72px; }
+    .hero-stats { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 760px) {
+    .hero-inner { padding: 96px 24px 64px; }
+    .hero-stats { grid-template-columns: 1fr; }
+  }
+</style>

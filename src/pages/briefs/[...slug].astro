@@ -1,0 +1,34 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import BriefLayout from "@layouts/BriefLayout.astro";
+import CTA from "@components/CTA.astro";
+
+/**
+ * Renders any /briefs/<slug>/ page from src/content/briefs/<slug>.mdx
+ */
+export async function getStaticPaths() {
+  const all = await getCollection("briefs", ({ data }) => !data.draft);
+  return all.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+type Props = { entry: CollectionEntry<"briefs"> };
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const brief = entry.data;
+---
+<BriefLayout brief={brief} footerNote={`Brief ${brief.id} · Published ${brief.publishedAt.toISOString().slice(0,10)} · Model based on Łukasz's internal worksheet, validated against METR · DORA · Faros AI · MIT/Microsoft (2025–2026).`}>
+  <article>
+    <Content />
+  </article>
+  <CTA
+    titleHtml={`Want to know your project's <em>real</em> X-factor before we start?`}
+    sub="We'll size your codebase, score your team's review and integration capacity, and give you a Pirxey number for your specific mission. Free. No slide deck."
+    primaryLabel={brief.ctaPrimaryLabel}
+    primaryHref={brief.ctaPrimaryUrl}
+    secondaryLabel={brief.ctaSecondaryLabel}
+    secondaryHref={brief.ctaSecondaryUrl}
+  />
+</BriefLayout>

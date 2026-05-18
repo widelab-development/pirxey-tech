@@ -1,0 +1,28 @@
+---
+interface Props { n: string; title: string; stat: string; body: string; cite: string; }
+const { n, title, stat, body, cite } = Astro.props;
+---
+<article class="factor-card">
+  <div class="factor-top"><span class="n">{n}</span><span class="stat">{stat}</span></div>
+  <h3 class="title">{title}</h3>
+  <p class="body" set:html={body} />
+  <div class="cite">— {cite}</div>
+</article>
+
+<style>
+  .factor-card {
+    background: rgba(249, 249, 234, 0.03);
+    border: 1px solid var(--line-dark);
+    border-radius: var(--radius-card); padding: 28px;
+    display: flex; flex-direction: column; gap: 14px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .factor-card:hover { border-color: rgba(255, 96, 38, 0.32); transform: translateY(-2px); }
+  .factor-top { display: flex; justify-content: space-between; align-items: baseline; }
+  .n { font-family: var(--font-sans); font-size: 11px; color: var(--on-dark-3); letter-spacing: 0.1em; font-weight: 600; }
+  .stat { font-family: var(--font-sans); font-size: 24px; color: var(--orange); font-weight: 700; letter-spacing: -0.01em; }
+  .title { font-family: var(--font-sans); font-size: 22px; line-height: 1.25; font-weight: 700; letter-spacing: -0.01em; margin: 0; color: var(--on-dark); }
+  .body { color: var(--on-dark-2); font-size: 15px; line-height: 1.6; margin: 0; }
+  .body :global(strong) { color: var(--on-dark); font-weight: 600; }
+  .cite { font-family: var(--font-sans); font-size: 11px; color: var(--on-dark-3); border-top: 1px dashed var(--line-dark); padding-top: 12px; margin-top: auto; letter-spacing: 0.02em; }
+</style>

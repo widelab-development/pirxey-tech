@@ -1,0 +1,103 @@
+---
+interface Props {
+  eyebrow?: string;
+  /** HTML allowed for inline em */
+  titleHtml: string;
+  sub: string;
+  primaryLabel: string;
+  primaryHref: string;
+  secondaryLabel?: string;
+  secondaryHref?: string;
+  metaLeft?: string;
+  metaRight?: string;
+}
+const {
+  eyebrow = "Mission control standing by",
+  titleHtml,
+  sub,
+  primaryLabel,
+  primaryHref,
+  secondaryLabel,
+  secondaryHref,
+  metaLeft = "Pirxey · Aleja Grunwaldzka 472, 80-309 Gdańsk, Poland",
+  metaRight = "130+ engineers · 100+ missions delivered",
+} = Astro.props;
+---
+<section class="cta" id="cta">
+  <div class="cta-stars" aria-hidden="true"></div>
+  <div class="glow-orange tl" aria-hidden="true"></div>
+  <div class="glow-orange br" aria-hidden="true"></div>
+  <div class="noise"></div>
+  <div class="cta-inner">
+    <div class="cta-eyebrow">{eyebrow}</div>
+    <h2 set:html={titleHtml} />
+    <p class="cta-sub">{sub}</p>
+    <div class="cta-actions">
+      <a href={primaryHref} class="cta-primary" target="_blank" rel="noopener noreferrer">
+        <span>{primaryLabel}</span>
+        <svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7h10M8 3l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+      </a>
+      {secondaryLabel && secondaryHref && (
+        <a href={secondaryHref} class="cta-secondary">{secondaryLabel}</a>
+      )}
+    </div>
+    <div class="cta-meta">
+      <span>{metaLeft}</span>
+      <span class="dot">·</span>
+      <span>{metaRight}</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative; overflow: hidden;
+    border-radius: var(--radius-section); margin: var(--gutter);
+    background: var(--bg); color: var(--on-dark);
+  }
+  .cta-stars {
+    position: absolute; inset: 0;
+    background-image: url("/assets/stars-webflow.png");
+    background-size: cover; background-position: center; opacity: 0.35;
+  }
+  .cta-inner { position: relative; z-index: 3; max-width: 880px; margin: 0 auto; padding: 120px 80px; text-align: center; }
+  .cta-eyebrow {
+    font-family: var(--font-sans); font-size: 11px; color: var(--orange);
+    letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 24px;
+    font-weight: 600; display: inline-flex; gap: 10px; align-items: center;
+  }
+  .cta-eyebrow:before, .cta-eyebrow:after { content: "✦"; color: var(--orange); font-size: 14px; }
+  .cta h2 {
+    font-family: var(--font-sans); font-size: clamp(36px, 5vw, 60px);
+    line-height: 1.08; font-weight: 700; letter-spacing: -0.02em;
+    margin: 0 0 24px; text-wrap: balance;
+  }
+  .cta h2 :global(em) { color: var(--orange); font-style: normal; }
+  .cta-sub { font-family: var(--font-body); font-size: 18px; color: var(--on-dark-2); max-width: 620px; margin: 0 auto 40px; line-height: 1.55; }
+  .cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+  .cta-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 18px 32px; border-radius: var(--radius-pill);
+    background: var(--orange); color: #fff; text-decoration: none;
+    font-family: var(--font-sans); font-weight: 600; font-size: 15px;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .cta-primary:hover { background: var(--orange-hover); transform: translateY(-1px); }
+  .cta-secondary {
+    display: inline-flex; align-items: center;
+    padding: 18px 32px; border-radius: var(--radius-pill);
+    border: 1px solid var(--line-dark-2);
+    color: var(--on-dark); text-decoration: none;
+    font-family: var(--font-sans); font-weight: 500; font-size: 15px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .cta-secondary:hover { border-color: var(--orange); color: var(--orange); }
+  .cta-meta {
+    font-family: var(--font-sans); font-size: 12px; color: var(--on-dark-3);
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    letter-spacing: 0.02em;
+  }
+  .cta-meta .dot { color: var(--orange); }
+
+  @media (max-width: 760px) { .cta-inner { padding: 80px 24px; } }
+</style>

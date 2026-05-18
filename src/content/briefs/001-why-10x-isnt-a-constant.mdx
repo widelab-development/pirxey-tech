@@ -1,0 +1,206 @@
+---
+id: "001"
+title: "Why 10× isn't a constant"
+subtitle: "A field model for AI productivity decay across project scale"
+description: "Your client built that module solo with Claude in an evening. Your team spent a quarter on the same scope. Drag the slider — see why AI leverage decays as a codebase grows. A Pirxey field model from 53 production projects."
+publishedAt: 2026-05-15
+updatedAt: 2026-05-15
+author:
+  name: "Łukasz Graliński"
+  role: "Founder"
+  url: "https://pirxey.com"
+tags: ["AI engineering", "Productivity", "Scale", "Engineering management"]
+heroImage: "/assets/hero-bg.png"
+heroHeadline: "<span class=\"strike\">10×</span> is not a constant.<br>It's a <em>function of project size.</em>"
+heroSub: "Your client built that module solo with Claude in an evening. Your team spent a quarter on the same scope. They're not slow — the math is different. Drag the slider and see what scale does to AI leverage."
+heroStats:
+  - value: "9.2×"
+    label: "Boost at step 1 · MVP"
+    tone: "up"
+  - value: "4.4×"
+    label: "Boost at step 10 · scale-up"
+    tone: "mid"
+  - value: "1.6×"
+    label: "Boost at step 30 · enterprise"
+    tone: "down"
+ctaPrimaryLabel: "Schedule a discovery call"
+ctaPrimaryUrl: "https://calendly.com/michal-kacprowicz-pirxey/discovery-call-pirxey"
+ctaSecondaryLabel: "sales@pirxey.com"
+ctaSecondaryUrl: "mailto:sales@pirxey.com?subject=AI%20boost%20assessment"
+---
+
+import Section from "@components/Section.astro";
+import Cockpit from "@components/react/Cockpit.tsx";
+import SoloVsTeamCard from "@components/cards/SoloVsTeamCard.astro";
+import ForceCard from "@components/cards/ForceCard.astro";
+import EvidenceCard from "@components/cards/EvidenceCard.astro";
+
+<Section
+  theme="dark"
+  id="cockpit"
+  eyebrow="Cockpit · interactive"
+  titleHtml="Drag the slider. <em>See the decay.</em>"
+  subHtml="Same engineer. Same tools. Different codebase. The X-factor is not a marketing number — it is <code>AI efficiency × Human factor</code>, and both terms shrink as complexity grows. Tune the inputs to match your team's reality."
+>
+  <Cockpit client:visible />
+</Section>
+
+<Section
+  theme="light"
+  id="solo"
+  eyebrow="Solo vs Team · the gap"
+  titleHtml="Why your client ships in an evening, <em>and we ship in a quarter.</em>"
+  subHtml={`The honest answer to <em>"why can't your team match what I did at home?"</em> is not <em>"they're worse than you"</em>. It is that you and the model worked on a fundamentally different problem. Six concrete differences — all measurable.`}
+>
+  <div class="solo-grid">
+    <SoloVsTeamCard
+      n="01"
+      title="Empty repo vs. living codebase."
+      solo="The model sees 100% of the project — it fits in context. Every helper it writes is correct by definition: there is nothing to conflict with."
+      team={`On a 250k LOC repo the model loads ~6–11% of relevant context. It rebuilds the validator that already exists 3 folders away. <em>Volume goes up. Real progress doesn't.</em>`}
+      punch="Empty terrain is a feature of weekend projects, <em>not a Claude capability</em>."
+    />
+    <SoloVsTeamCard
+      n="02"
+      title="No review burden. No reviewers."
+      solo={`You ship straight to your own laptop. The review is "does it run?" — answered in seconds.`}
+      team="Every block has to be read, traced, security-reviewed, QA-tested. <em>Faros AI: high-AI teams open 47% more PRs, but review time goes up 91% and throughput stays flat.</em>"
+      punch="The bottleneck moves from typing to <em>verifying</em>."
+    />
+    <SoloVsTeamCard
+      n="03"
+      title="You + Claude vs. 12 humans + Claude."
+      solo="Zero coordination tax. One head holds the spec. Decisions take seconds."
+      team={`4 devs + design + BA + PO + DM + QA + security. Half the gain is eaten by alignment meetings, async handoffs, and "wait, did you talk to X?"`}
+      punch={`Brooks's Law didn't go away. <em>AI doesn't reduce the cost of agreement.</em>`}
+    />
+    <SoloVsTeamCard
+      n="04"
+      title="2 integrations vs. 47 integrations."
+      solo="You hit OpenAI and Stripe. Both well-documented. Both have official SDKs."
+      team={`Production talks to 47 systems. Half have undocumented quirks. Some require a phone call to the vendor. The model can't see any of this from a prompt.`}
+      punch="The work nobody saw on the demo <em>is most of the work</em>."
+    />
+    <SoloVsTeamCard
+      n="05"
+      title="No compliance. No audit. No data migration."
+      solo={`Demo data. No SOC2. No GDPR scrutiny. No PII. No "what happens to 12M existing rows?".`}
+      team="Real customer data. Audit trails. Regulator deadlines. Zero-downtime migrations. <em>This work has nothing to do with how fast the model types.</em>"
+      punch={`Production has constraints that prompts can't see.`}
+    />
+    <SoloVsTeamCard
+      n="06"
+      title="vercel deploy vs. blue-green across 3 envs."
+      titleHtml="<code>vercel deploy</code> vs. blue-green across 3 envs."
+      solo="One command. One environment. If it breaks at 3am, you fix it at 3am. No SLA."
+      team="Dev → staging → prod, blue-green, feature flags, canary, rollback plan, observability, on-call rotation, 99.95% SLA. Each one is real engineering — not a prompt."
+      punch="Shipping a prototype and operating a platform <em>are different jobs</em>."
+    />
+  </div>
+</Section>
+
+<Section
+  theme="dark"
+  id="forces"
+  eyebrow="Why · the six forces"
+  title="What's actually shrinking the boost?"
+  sub="Six measurable forces — each backed by 2025–2026 research. Together they explain the curve you just dragged through."
+>
+  <div class="factors-grid">
+    <ForceCard
+      n="01"
+      title="Silent duplication inflates the diff"
+      stat="+38% redundant logic"
+      body="On small projects there is little to duplicate, so AI looks clean. On large codebases it often cannot see what already exists — so it rebuilds the same helper, validator, or fetch wrapper three folders away. Output volume goes up. Real progress does not."
+      cite="Pirxey internal benchmark · 53 products · 2024–2026"
+    />
+    <ForceCard
+      n="02"
+      title="Duplication compounds context rot"
+      stat="2.4× longer fixes"
+      body="Duplication was always a tax. With AI it becomes a multiplier: two copies of the same logic mean two stale fragments in context, two reviewers tracing two call graphs, and two places where the next bug fix has to land."
+      cite="Pirxey post-mortems · 17 SaaS rescues"
+    />
+    <ForceCard
+      n="03"
+      title="AI does not know what it does not know"
+      stat="6–11% context coverage"
+      body="On real platforms the model loads fragments — a file here, a snippet there — and answers with full confidence. The output reads authoritative, but the relevant constraint often lived in a file the model never opened."
+      cite="Pirxey context-coverage audit · Q4 2025"
+    />
+    <ForceCard
+      n="04"
+      title="More generated code means more review burden"
+      stat="Review grows 1.7× faster"
+      body="Volume is cheap to produce and expensive to vet. Every generated block has to be read, traced, and understood before it ships — because one confidently wrong block in a critical path is enough. The bottleneck moves from typing to review."
+      cite="Pirxey PR telemetry · 2025"
+    />
+    <ForceCard
+      n="05"
+      title="Why seniors on familiar code see ~0 speedup"
+      stat="−2% to +4%"
+      body="Our working hypothesis: AI excels at isolated, low-context tasks — a new screen, a clean integration, a one-off script. It struggles where senior developers spend the hard hours: cross-module bugs and product logic that require holding the system in your head."
+      cite="Pirxey field study · 14 senior engineers"
+    />
+    <ForceCard
+      n="06"
+      title="AI is powerful — when the system is designed for it"
+      stat="73% decay recoverable"
+      body="The answer is not less AI. It is better boundaries. Close context inside isolated modules, even if only at the logic layer. Plan the architecture, brainstorm with AI, challenge its proposals, cut the bad ones, develop the good ones. Soft skills matter: if a developer cannot articulate the need clearly, they will not vibe-code a great product."
+      cite="Pirxey delivery playbook · 2024–2026"
+    />
+  </div>
+</Section>
+
+<Section
+  theme="light"
+  id="evidence"
+  eyebrow="Evidence · receipts"
+  titleHtml="The numbers — <em>straight from the source.</em>"
+  sub="We didn't make this curve up. Every percentage in our model maps to public, peer-reviewed or industry-scale research. Click through and read."
+>
+  <div class="research-grid">
+    <EvidenceCard
+      stat="19%"
+      headline="AI made experienced devs slower, not faster."
+      body="METR's 2025 randomized controlled trial: 16 senior open-source developers, 246 real tasks, mature codebases (avg. 1M+ LOC, 22k+ stars). With AI tools allowed, tasks took 19% longer."
+      source="METR (2025)"
+      url="https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/"
+    />
+    <EvidenceCard
+      stat="39pt"
+      headline="Perception gap between felt speed and real speed."
+      body="Devs predicted AI would speed them up by 24%. After finishing, they still believed AI sped them up ~20%. Reality: 19% slower. Self-reports overstate AI value by ~39 percentage points."
+      source="arXiv 2507.09089"
+      url="https://arxiv.org/abs/2507.09089"
+    />
+    <EvidenceCard
+      stat="47%"
+      headline="More PRs in. Same throughput out."
+      body="Faros AI telemetry across 10k+ devs / 1,255 teams: high-AI teams open 47% more pull requests/day and PRs are 154% larger — but review time is up 91%, bugs up 9%, DORA throughput flat."
+      source="Faros AI — Lab vs Reality"
+      url="https://www.faros.ai/blog/lab-vs-reality-ai-productivity-study-findings"
+    />
+    <EvidenceCard
+      stat="0%"
+      headline="Senior devs on familiar code: no measurable speedup."
+      body="This matches our hypothesis: AI helps most when the task is isolated and low-context. On familiar, mature code senior developers already know the hidden constraints — and spend the extra time checking whether AI missed them."
+      source="MIT / Microsoft field evidence + Pirxey hypothesis"
+      url="https://www.cerbos.dev/blog/productivity-paradox-of-ai-coding-assistants"
+    />
+    <EvidenceCard
+      stat="53"
+      headline="products measured, not assumed."
+      body="Pirxey's curve is based on two years of delivery telemetry across 53 products: shipped scope, PR review load, rework, rollback rate, duplicated logic, and realized throughput. We do not count generated code as value until it survives review and production."
+      source="Pirxey internal benchmark, 2024–2026"
+      url="#cockpit"
+    />
+    <EvidenceCard
+      stat="Soft"
+      headline="skills became the hard skill."
+      body="The bottleneck has moved upstream: naming the constraint, describing the product intent, and knowing when to challenge the model. Great AI development is not letting the model run loose — it is designing the box it can safely be smart inside."
+      source="Pirxey delivery teams"
+      url="#forces"
+    />
+  </div>
+</Section>

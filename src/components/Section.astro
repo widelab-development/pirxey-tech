@@ -1,0 +1,92 @@
+---
+/**
+ * Section — rounded 24px container in dark or light theme.
+ * Matches Pirxey AI LP composition where sections alternate dark↔light.
+ */
+interface Props {
+  theme?: "dark" | "light";
+  eyebrow?: string;
+  title?: string;
+  /** HTML allowed for em / code emphasis */
+  titleHtml?: string;
+  sub?: string;
+  subHtml?: string;
+  id?: string;
+  noise?: boolean;
+  class?: string;
+}
+
+const {
+  theme = "dark",
+  eyebrow,
+  title,
+  titleHtml,
+  sub,
+  subHtml,
+  id,
+  noise = true,
+  class: className,
+} = Astro.props;
+---
+
+<section class:list={["sec", `sec-${theme}`, className]} id={id}>
+  {noise && theme === "dark" && <div class="noise"></div>}
+  <div class="sec-inner">
+    {eyebrow && <div class="sec-eyebrow">{eyebrow}</div>}
+    {titleHtml ? (
+      <h2 class="sec-title" set:html={titleHtml} />
+    ) : title ? (
+      <h2 class="sec-title">{title}</h2>
+    ) : null}
+    {subHtml ? (
+      <p class="sec-sub" set:html={subHtml} />
+    ) : sub ? (
+      <p class="sec-sub">{sub}</p>
+    ) : null}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .sec { position: relative; overflow: hidden; border-radius: var(--radius-section); margin: var(--gutter); }
+  .sec-dark { background: var(--bg); color: var(--on-dark); }
+  .sec-light { background: var(--beige); color: var(--on-light); }
+  .sec-inner { position: relative; z-index: 2; max-width: var(--max-w); margin: 0 auto; padding: var(--section-y) var(--pad-x); }
+
+  .sec-eyebrow {
+    font-family: var(--font-sans); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 24px;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .sec-eyebrow:before, .sec-eyebrow:after {
+    content: ""; width: 24px; height: 1px; background: var(--orange); opacity: 0.6;
+  }
+  .sec-light .sec-eyebrow { color: var(--orange-overlay); }
+  .sec-light .sec-eyebrow:before, .sec-light .sec-eyebrow:after { background: var(--orange-overlay); }
+
+  .sec-title {
+    font-family: var(--font-sans); font-weight: 700;
+    font-size: clamp(36px, 4.6vw, 56px); line-height: 1.07; letter-spacing: -0.02em;
+    margin: 0 0 24px; text-wrap: balance;
+  }
+  .sec-title :global(em) { color: var(--orange); font-style: normal; }
+  .sec-light .sec-title :global(em) { color: var(--orange-overlay); }
+
+  .sec-sub {
+    font-family: var(--font-body); font-size: 18px; line-height: 1.55;
+    color: var(--on-dark-2); max-width: 720px;
+  }
+  .sec-light .sec-sub { color: var(--on-light-2); }
+  .sec-sub :global(code) {
+    font-family: var(--font-mono); font-size: 14px;
+    background: rgba(255, 96, 38, 0.14); color: var(--orange);
+    padding: 2px 6px; border-radius: 4px;
+  }
+  .sec-light .sec-sub :global(code) { background: rgba(212, 78, 26, 0.10); color: var(--orange-overlay); }
+  .sec-sub :global(em) { color: var(--orange); font-style: italic; }
+  .sec-light .sec-sub :global(em) { color: var(--orange-overlay); }
+
+  @media (max-width: 1100px) { .sec-inner { padding: var(--section-y-md) var(--pad-x-md); } }
+  @media (max-width: 760px) { .sec-inner { padding: var(--section-y-sm) var(--pad-x-sm); } }
+</style>
