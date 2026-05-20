@@ -1,0 +1,148 @@
+---
+id: "002"
+title: "Why your emails go to spam"
+subtitle: "A 5-second audit of any domain's email authentication — SPF, DKIM, DMARC, BIMI"
+description: "Type any domain. Get a verdict on the four layers of email authentication in under two seconds — what's configured, what's broken, and what to paste into your DNS. No signup, no paywall. The same audit a Solution Architect runs by hand — in your browser, instant, free."
+publishedAt: 2026-05-19
+updatedAt: 2026-05-19
+author:
+  name: "Grzegorz Meger"
+  role: "Solution Architect · Pirxey 🚀 widelab"
+  url: "https://www.linkedin.com/in/gmeger/"
+tags: ["Email", "Deliverability", "DMARC", "BIMI", "SPF", "DKIM", "Domain audit"]
+heroImage: "/assets/hero-bg.png"
+heroEyebrow: "Domain Health · Live audit"
+heroHeadline: "Your emails reach the inbox.<br><span class=\"strike\">Until</span> they <em>don't.</em>"
+heroSub: "DMARC failures don't bounce — they silently drop into the spam folder. Type any domain and see exactly which of the four authentication layers are working, broken, or never configured. The same audit a Solution Architect runs by hand — in your browser, under two seconds, free."
+heroStats:
+  - value: "4"
+    label: "Layers checked · SPF · DKIM · DMARC · BIMI"
+    tone: "up"
+  - value: "0"
+    label: "Tools to install · accounts · paywalls"
+    tone: "up"
+  - value: "~1.5s"
+    label: "Average audit time, per domain"
+    tone: "up"
+ctaPrimaryLabel: "Schedule a discovery call"
+ctaPrimaryUrl: "https://calendly.com/michal-kacprowicz-pirxey/discovery-call-pirxey"
+ctaSecondaryLabel: "sales@pirxey.com"
+ctaSecondaryUrl: "mailto:sales@pirxey.com?subject=Email%20deliverability%20audit"
+---
+
+import Section from "@components/Section.astro";
+import EmailAuthCheck from "@components/react/EmailAuthCheck.tsx";
+import ForceCard from "@components/cards/ForceCard.astro";
+import EvidenceCard from "@components/cards/EvidenceCard.astro";
+import MarqueeRow from "@components/MarqueeRow.astro";
+
+<MarqueeRow items={[
+  `<em>"Why isn't the client getting our invoices?"</em>`,
+  `<strong>"Marketing emails go to spam."</strong>`,
+  `<em>"Someone is spoofing the CEO."</em>`,
+  `<strong>BIMI?</strong> <em>"What's BIMI?"</em>`,
+  `Four protocols. <em>Four ways to fail silently.</em>`,
+  `<strong>Audit any domain in 5 seconds.</strong> No signup.`,
+]} duration={52} />
+
+<Section
+  theme="dark"
+  id="audit"
+  eyebrow="Audit · interactive"
+  titleHtml="Type a domain. <em>See the verdict.</em>"
+  subHtml={`Live DNS lookups over DNS-over-HTTPS (Cloudflare <code>1.1.1.1</code>), parsed in your browser. We probe the common DKIM selectors for Google Workspace, Microsoft 365, SendGrid, SES, Mailgun, Postmark, Mailchimp — and validate BIMI assets when they're present. The same checks a Solution Architect runs by hand — but instant, and free.`}
+>
+  <EmailAuthCheck client:visible />
+</Section>
+
+<Section
+  theme="light"
+  id="four-layers"
+  eyebrow="The four layers · explained"
+  titleHtml="Four protocols. <em>Four ways to fail silently.</em>"
+  subHtml={`Each protocol exists because the previous one wasn't enough. SMTP from 1981 trusts anyone. SPF added a guest list. DKIM added a signature. DMARC added enforcement. BIMI added a face. Skip any one of them and the chain breaks — <em>without bouncing.</em>`}
+>
+  <div class="four-pillars">
+    <ForceCard
+      n="01"
+      title="SPF — the guest list at the door"
+      stat="Layer 1 of 4"
+      body={`An owner-controlled TXT record at the apex domain that lists every IP allowed to send mail as you. Receivers check: does the sending IP appear here? If not — spoofed. The catch: SPF allows <strong>at most 10 DNS lookups</strong> during evaluation. Once you exceed that, it silently treats the record as if it didn't exist.`}
+      cite="RFC 7208 · in use since 2014"
+    />
+    <ForceCard
+      n="02"
+      title="DKIM — the wax seal on the envelope"
+      stat="Layer 2 of 4"
+      body={`The sending server signs each message with a private key. The matching public key lives at <strong>&lt;selector&gt;._domainkey.&lt;domain&gt;</strong>. Receivers verify the signature byte-by-byte. Tampered in transit? Sent by a server without the key? DKIM fails. Modern keys are 2048-bit RSA.`}
+      cite="RFC 6376 · every major ESP signs with DKIM"
+    />
+    <ForceCard
+      n="03"
+      title="DMARC — the boss of all bosses"
+      stat="Layer 3 of 4"
+      body={`If SPF <em>and</em> DKIM both fail — DMARC decides what happens. <strong>p=none</strong> just reports. <strong>p=quarantine</strong> ships failing mail to spam. <strong>p=reject</strong> drops it at the SMTP layer. Add <strong>rua=</strong> to get aggregate XML reports of every server trying to send as you — that's how you discover ongoing spoofing.`}
+      cite="RFC 7489 · mandatory for bulk senders since 2024"
+    />
+    <ForceCard
+      n="04"
+      title="BIMI — the brand logo in the inbox"
+      stat="Layer 4 of 4"
+      body={`With DMARC enforcing, you can publish a BIMI record pointing at an SVG Tiny PS logo and a VMC certificate. Gmail, Yahoo, Apple Mail, Fastmail render that logo next to your name. Most setups silently fail on one of three things: the SVG isn't Tiny PS, the certificate isn't from a recognized CA, or <strong>the logo hash in the cert doesn't match the SVG byte-for-byte.</strong>`}
+      cite="BIMI Group · DigiCert / Entrust VMC"
+    />
+  </div>
+</Section>
+
+<Section
+  theme="dark"
+  id="receipts"
+  eyebrow="Sources · receipts"
+  title="The protocols, straight from the source."
+  sub="Every check this widget runs maps to a public RFC, a CA-published spec, or a major mailbox provider's published requirements. Click through and read."
+>
+  <div class="research-grid">
+    <EvidenceCard
+      stat="RFC 7208"
+      headline="Sender Policy Framework"
+      body="The current SPF spec. Defines record syntax, the 10-lookup limit, and the four qualifiers (-all / ~all / ?all / +all). Anyone shipping email-sending code should have read this once."
+      source="IETF"
+      url="https://datatracker.ietf.org/doc/html/rfc7208"
+    />
+    <EvidenceCard
+      stat="RFC 6376"
+      headline="DomainKeys Identified Mail"
+      body="DKIM. Cryptographic signing of email by the sending domain. Defines the selector layout, RSA key formats, and the c14n canonicalization used to compute the signature."
+      source="IETF"
+      url="https://datatracker.ietf.org/doc/html/rfc6376"
+    />
+    <EvidenceCard
+      stat="RFC 7489"
+      headline="DMARC — Domain-based Message Authentication"
+      body="Builds on SPF + DKIM. Defines the policy tags (p, sp, pct, rua, ruf, adkim, aspf, fo, ri) and the alignment rules between authenticated identifiers and the From: header."
+      source="IETF"
+      url="https://datatracker.ietf.org/doc/html/rfc7489"
+    />
+    <EvidenceCard
+      stat="BIMI v1"
+      headline="Brand Indicators for Message Identification"
+      body="The BIMI specification. SVG Tiny PS logo profile, default._bimi selector, l= / a= record tags, and the VMC/CMC certificate requirement for rendering in Gmail and Yahoo."
+      source="BIMI Working Group"
+      url="https://bimigroup.org/"
+    />
+    <EvidenceCard
+      stat="Feb 2024"
+      headline="Gmail & Yahoo sender requirements"
+      body="From February 2024 every bulk sender (5,000+ messages/day to Gmail or Yahoo) must publish SPF, DKIM, and a DMARC policy. Without them, you stop reaching the inbox — full stop, no warning."
+      source="Google + Yahoo · joint announcement"
+      url="https://blog.google/products/gmail/gmail-security-authentication-spam-protection/"
+    />
+    <EvidenceCard
+      stat="Skill"
+      headline="The full audit logic — as a Claude Code skill"
+      body="The exact checks this widget runs, packaged as a Claude Code skill. Install with one line and Claude runs the audit from your terminal — DKIM selector probing, BIMI SVG conformance, full VMC certificate validation."
+      source="github.com/pirxey/email-auth-audit"
+      url="https://github.com/pirxey/email-auth-audit"
+    />
+  </div>
+</Section>
