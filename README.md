@@ -68,9 +68,27 @@ npm run preview      # serve built site
 
 ## Deploy
 
-Cloudflare Pages:
+**Production auto-deploys from `main`.** Cloudflare Pages is connected to this
+GitHub repo — every push (or merged PR) to `main` triggers a fresh build and
+publishes to `pirxey.tech`. No manual step required.
+
+| Setting          | Value          |
+|------------------|----------------|
+| Production branch | `main`         |
+| Framework preset | Astro          |
+| Build command    | `npm run build` |
+| Build output     | `dist`         |
+| Root directory   | `/`            |
+
+Preview deployments: every non-`main` branch you push gets its own preview URL
+(`<branch>.pirxey-tech-XXX.pages.dev`) — useful for sharing in-progress briefs
+before merging.
+
+If you ever need a one-off deploy from your machine (e.g. CF connection is
+down), the manual escape hatch is:
 
 ```bash
+npm run build
 npx wrangler pages deploy dist --project-name pirxey-tech --branch main
 ```
 
