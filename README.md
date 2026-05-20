@@ -61,10 +61,25 @@ Drafts: set `draft: true` in frontmatter to hide.
 
 ```bash
 npm install
+cp .env.example .env # only if you need the optional integrations below
 npm run dev          # localhost:4321
 npm run build        # static export to dist/
 npm run preview      # serve built site
 ```
+
+### Environment variables
+
+All client-exposed env vars must be prefixed with `PUBLIC_` — Astro inlines
+them into the bundle at build time.
+
+| Variable | Used for | Required? |
+|----------|----------|-----------|
+| `PUBLIC_SITE` | Canonical URL + sitemap base. Defaults to `https://pirxey.tech`. | No |
+| `PUBLIC_MAILCHECK_API_URL` | Mailcheck backend for brief 002's "Run deep VMC validation" button (X.509 cert parsing — EKU `id-kp-bimi`, LogotypeExtension, logo hash binding, chain). Without it the BIMI card still runs surface checks in-browser; the deep-validate button is simply hidden. | No |
+
+For production, set these in **Cloudflare Pages → Settings → Environment
+variables** (both Production and Preview scopes) so each deploy picks them
+up at build time.
 
 ## Deploy
 

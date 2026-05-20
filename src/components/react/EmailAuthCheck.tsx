@@ -5,16 +5,19 @@ import "./EmailAuthCheck.css";
  * EmailAuthCheck — an interactive domain email-authentication auditor.
  * Designed to drop into an Astro brief as `<EmailAuthCheck client:visible />`.
  *
- * For v1 it performs every DNS lookup directly from the browser using
- * Cloudflare's DNS-over-HTTPS JSON endpoint (https://cloudflare-dns.com/dns-query).
- * No backend required. The deep BIMI VMC certificate validation (EKU,
- * LogotypeExtension, logo hash binding, chain) requires a backend — when
- * `PUBLIC_MAILCHECK_API_URL` is set in Astro env, the component will call it
- * to augment the BIMI result with that data.
+ * SPF / DKIM / DMARC and surface BIMI checks run directly in the browser
+ * via Cloudflare's DNS-over-HTTPS JSON endpoint. Deep BIMI VMC validation
+ * (EKU `id-kp-bimi`, LogotypeExtension, logo hash binding, chain verify)
+ * needs X.509 parsing the browser can't do — when `PUBLIC_MAILCHECK_API_URL`
+ * is set, the BIMI card exposes a button that calls that backend and
+ * replaces the BIMI layer with the deep result.
  */
+
+const MAILCHECK_API_URL = (import.meta.env.PUBLIC_MAILCHECK_API_URL as string | undefined)?.replace(/\/+$/, "");
 
 type Status = "ok" | "warn" | "fail" | "na" | "pending";
 type Layer = "spf" | "dkim" | "dmarc" | "bimi";
+type DeepStatus = "idle" | "running" | "done" | "error";
 
 interface Finding {
   level: "ok" | "warn" | "fail" | "info";
@@ -426,6 +429,7 @@ export default function EmailAuthCheck() {
   const [progress, setProgress] = useState<Record<Layer, Status>>({
     spf: "pending", dkim: "pending", dmarc: "pending", bimi: "pending",
   });
+  const [deepBimi, setDeepBimi] = useState<{ status: DeepStatus; error?: string }>({ status: "idle" });
 
   const run = useCallback(async (rawDomain: string) => {
     const domain = rawDomain.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "");
@@ -436,6 +440,7 @@ export default function EmailAuthCheck() {
     setError(null);
     setRunning(true);
     setProgress({ spf: "pending", dkim: "pending", dmarc: "pending", bimi: "pending" });
+    setDeepBimi({ status: "idle" });
     setResult({
       domain,
       spf: blank(), dkim: blank(), dmarc: blank(), bimi: blank(),
@@ -459,6 +464,32 @@ export default function EmailAuthCheck() {
     e.preventDefault();
     if (input && !running) run(input);
   }, [input, running, run]);
+
+  const runDeepBimi = useCallback(async () => {
+    if (!MAILCHECK_API_URL || !result) return;
+    setDeepBimi({ status: "running" });
+    try {
+      const r = await fetch(`${MAILCHECK_API_URL}/api/audit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ domain: result.domain }),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const json = (await r.json()) as { bimi?: { status: Status; summary: string; raw?: string | null; findings?: Finding[] } };
+      if (!json.bimi) throw new Error("backend response had no `bimi` field");
+      const bimi: LayerResult = {
+        status: json.bimi.status,
+        summary: json.bimi.summary,
+        raw: json.bimi.raw ?? undefined,
+        findings: json.bimi.findings ?? [],
+      };
+      setResult((cur) => cur && { ...cur, bimi });
+      setProgress((p) => ({ ...p, bimi: bimi.status }));
+      setDeepBimi({ status: "done" });
+    } catch (e) {
+      setDeepBimi({ status: "error", error: (e as Error).message });
+    }
+  }, [result]);
 
   const verdict = useMemo<Status>(() => {
     if (!result || running) return "pending";
@@ -552,7 +583,18 @@ export default function EmailAuthCheck() {
               <LayerCard layer="spf" title="SPF" subtitle="Sender Policy Framework" result={result.spf} pending={progress.spf === "pending"} />
               <LayerCard layer="dkim" title="DKIM" subtitle="DomainKeys Identified Mail" result={result.dkim} pending={progress.dkim === "pending"} />
               <LayerCard layer="dmarc" title="DMARC" subtitle="Domain-based Message Authentication" result={result.dmarc} pending={progress.dmarc === "pending"} />
-              <LayerCard layer="bimi" title="BIMI" subtitle="Brand Indicators for Message Identification" result={result.bimi} pending={progress.bimi === "pending"} />
+              <LayerCard
+                layer="bimi"
+                title="BIMI"
+                subtitle="Brand Indicators for Message Identification"
+                result={result.bimi}
+                pending={progress.bimi === "pending"}
+                extra={
+                  MAILCHECK_API_URL && progress.bimi !== "pending" && result.bimi.status !== "na" ? (
+                    <BimiDeepValidate state={deepBimi} onRun={runDeepBimi} />
+                  ) : null
+                }
+              />
             </>
           )}
         </div>
@@ -561,8 +603,9 @@ export default function EmailAuthCheck() {
   );
 }
 
-function LayerCard({ layer, title, subtitle, result, pending }: {
+function LayerCard({ layer, title, subtitle, result, pending, extra }: {
   layer: Layer; title: string; subtitle: string; result: LayerResult; pending: boolean;
+  extra?: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
   const status = pending ? "pending" : result.status;
@@ -582,6 +625,7 @@ function LayerCard({ layer, title, subtitle, result, pending }: {
         <span className={`eac-badge eac-status-${status}`}>{badgeText}</span>
       </header>
       <div className="eac-layer-summary">{pending ? <em>Running checks…</em> : result.summary}</div>
+      {!pending && extra}
       {!pending && result.findings.length > 0 && (
         <>
           <button
@@ -613,6 +657,44 @@ function LayerCard({ layer, title, subtitle, result, pending }: {
         </>
       )}
     </article>
+  );
+}
+
+function BimiDeepValidate({ state, onRun }: {
+  state: { status: DeepStatus; error?: string };
+  onRun: () => void;
+}) {
+  if (state.status === "done") {
+    return (
+      <div className="eac-bimi-deep eac-bimi-deep-done">
+        <span className="eac-bimi-deep-tick" aria-hidden="true">✓</span>
+        Deep VMC validation complete — cert chain, EKU, LogotypeExtension, and logo hash verified server-side.
+      </div>
+    );
+  }
+  const running = state.status === "running";
+  return (
+    <div className="eac-bimi-deep">
+      <button
+        type="button"
+        className="eac-bimi-deep-btn"
+        onClick={onRun}
+        disabled={running}
+      >
+        {running ? <Spinner /> : null}
+        {running ? "Validating certificate…" : state.status === "error" ? "Retry deep VMC validation" : "Run deep VMC validation"}
+        {!running && (
+          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
+            <path d="M2 5h6m-2.5-2.5L8 5 5.5 7.5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </button>
+      <span className="eac-bimi-deep-hint">
+        {state.status === "error"
+          ? <>Backend call failed: <code>{state.error}</code></>
+          : <>Checks <code>id-kp-bimi</code> EKU, LogotypeExtension, logo hash binding, and chain — runs on our backend.</>}
+      </span>
+    </div>
   );
 }
 
