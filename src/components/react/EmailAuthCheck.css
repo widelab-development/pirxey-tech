@@ -403,6 +403,75 @@
 .eac-finding-fail .eac-finding-dot { background: var(--eac-fail); }
 .eac-finding-info .eac-finding-dot { background: var(--orange); opacity: 0.7; }
 
+/* ─── BIMI deep VMC validation ───────────────────────────────────── */
+.eac-bimi-deep {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 10px 12px;
+  background: rgba(255, 96, 38, 0.05);
+  border: 1px dashed rgba(255, 96, 38, 0.35);
+  border-radius: 8px;
+}
+.eac-bimi-deep-btn {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--orange);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s, transform 0.05s;
+}
+.eac-bimi-deep-btn:hover:not(:disabled) { background: var(--orange-hover); }
+.eac-bimi-deep-btn:active:not(:disabled) { transform: translateY(1px); }
+.eac-bimi-deep-btn:disabled { opacity: 0.6; cursor: progress; }
+.eac-bimi-deep-hint {
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--on-dark-3);
+  flex: 1 1 200px;
+}
+.eac-bimi-deep-hint code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: rgba(255, 96, 38, 0.10);
+  color: var(--orange);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.eac-bimi-deep-done {
+  border-style: solid;
+  border-color: rgba(88, 200, 150, 0.4);
+  background: rgba(88, 200, 150, 0.06);
+  color: var(--on-dark-2);
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.eac-bimi-deep-tick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--eac-ok);
+  color: #061122;
+  font-weight: 800;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
 /* ─── PLACEHOLDER ────────────────────────────────────────────────── */
 .eac-placeholder {
   background: rgba(249, 249, 234, 0.02);
