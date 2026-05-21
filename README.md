@@ -81,6 +81,29 @@ For production, set these in **Cloudflare Pages → Settings → Environment
 variables** (both Production and Preview scopes) so each deploy picks them
 up at build time.
 
+## Search indexing
+
+**Currently: OFF.** The site is intentionally blocked from Google and other search engines.
+
+Two things were changed:
+
+1. **`public/robots.txt`** — `Disallow: /` blocks all crawlers from scanning any page.
+2. **`src/components/SEO.astro`** — default `noindex` prop is `true`, so every page renders `<meta name="robots" content="noindex,nofollow">`.
+
+To turn indexing on when ready:
+
+1. In `public/robots.txt`, replace `Disallow: /` with the original allow rules:
+   ```
+   User-agent: *
+   Allow: /
+   Disallow: /assets/noise-light.png
+   Disallow: /assets/stars-webflow.png
+   ```
+2. In `src/components/SEO.astro`, change `noindex = true` back to `noindex = false`.
+3. Commit and push — Cloudflare Pages will rebuild and publish automatically.
+
+After that, submit `https://pirxey.tech/sitemap-index.xml` to Google Search Console to speed up discovery.
+
 ## Deploy
 
 **Production auto-deploys from `main`.** Cloudflare Pages is connected to this

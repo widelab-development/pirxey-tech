@@ -23,7 +23,7 @@ const {
   publishedAt, updatedAt, author,
   tags = [],
   jsonLd,
-  noindex = false,
+  noindex = true,
 } = Astro.props;
 
 const site = Astro.site?.toString().replace(/\/$/, "") ?? "https://pirxey.tech";

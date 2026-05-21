@@ -1,6 +1,4 @@
 User-agent: *
-Allow: /
-Disallow: /assets/noise-light.png
-Disallow: /assets/stars-webflow.png
+Disallow: /
 
 Sitemap: https://pirxey.tech/sitemap-index.xml
