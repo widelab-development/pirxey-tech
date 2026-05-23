@@ -146,9 +146,39 @@ import MarqueeRow from "@components/MarqueeRow.astro";
     <EvidenceCard
       stat="Skill"
       headline="The full audit logic — as a Claude Code skill"
-      body="The exact checks this widget runs, packaged as a Claude Code skill. Install with one line and Claude runs the audit from your terminal — DKIM selector probing, BIMI SVG conformance, full VMC certificate validation."
-      source="github.com/pirxey/email-auth-audit"
-      url="https://github.com/pirxey/email-auth-audit"
+      body="The exact checks this widget runs, packaged as a Claude Code skill inside the <strong>pirxey/skills</strong> set. One install and Claude walks you through the audit and every fix from your terminal — DKIM selector probing, BIMI SVG conformance, full VMC certificate validation."
+      source="github.com/pirxey/skills"
+      url="https://github.com/pirxey/skills"
     />
+  </div>
+</Section>
+
+<Section
+  theme="light"
+  id="fix"
+  eyebrow="The fix · two paths"
+  titleHtml="One audit. <em>Two ways to fix it.</em>"
+  subHtml={`Once the widget tells you which layer is broken, you have a choice. Run the same audit yourself — as a Claude Code skill from the <strong>pirxey/skills</strong> set, step by step, in your terminal. Or hand it to us and we'll fix it across every sending domain, vendor, and ESP you run.`}
+>
+  <div class="two-paths">
+    <article class="path-card path-skill">
+      <div class="path-badge">Path A · Do it yourself</div>
+      <h3>The same audit, <em>as a Claude Code skill.</em></h3>
+      <p>The exact logic that powers this page — DKIM selector probing, BIMI SVG Tiny PS conformance, full VMC certificate chain validation — lives as a step-by-step skill inside the <strong>pirxey/skills</strong> set. Install once, then ask Claude to audit any domain and walk you through each fix.</p>
+      <pre class="path-cmd"><code>npx skills add https://github.com/pirxey/skills --skill email-auth-audit</code></pre>
+      <a href="https://github.com/pirxey/skills" target="_blank" rel="noopener noreferrer" class="path-cta">
+        <span>View the skills set on GitHub</span>
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 11l8-8M6 3h5v5" stroke="currentColor" stroke-width="1.4" fill="none"/></svg>
+      </a>
+    </article>
+    <article class="path-card path-pirxey">
+      <div class="path-badge">Path B · Done for you</div>
+      <h3>Or let Pirxey <em>do it for you.</em></h3>
+      <p>Running multiple domains? Mixing Google Workspace, SendGrid, Mailchimp, and a transactional vendor? About to enforce <code>p=reject</code> without breaking marketing? We audit, fix, and monitor every layer for you — SPF flattening, DKIM rotation, DMARC enforcement rollout, BIMI publication with VMC procurement.</p>
+      <a href="https://calendly.com/michal-kacprowicz-pirxey/discovery-call-pirxey" target="_blank" rel="noopener noreferrer" class="path-cta primary">
+        <span>Schedule a discovery call</span>
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+      </a>
+    </article>
   </div>
 </Section>
