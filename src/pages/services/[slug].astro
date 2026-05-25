@@ -1,0 +1,74 @@
+---
+/**
+ * /services/[slug] — per-service SEO landing.
+ * Phase 0: minimal renderer to verify content collection routing.
+ * Real layout (hero, capabilities grid, tech stack, case studies, CTA) in Phase 4.
+ */
+import { getCollection, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  // Slug from filename: src/content/services/en/<slug>.mdx → entry.slug = "en/<slug>"
+  // We strip the locale prefix to get clean /services/<slug>/ URL for EN.
+  const entries = await getCollection("services", (e) => e.data.locale === "en");
+  return entries.map((entry) => ({
+    params: { slug: entry.slug.replace(/^en\//, "") },
+    props: { entry },
+  }));
+}
+
+interface Props { entry: CollectionEntry<"services">; }
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const data = entry.data;
+---
+
+<BaseLayout title={data.title} description={data.description} noindex={!data.indexable}>
+  <main style="max-width: 760px; margin: 4rem auto; padding: 0 1rem;">
+    {data.eyebrow && <p style="opacity: 0.6; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.75rem;">{data.eyebrow}</p>}
+    <h1 style="margin: 0.25rem 0;">{data.title}</h1>
+    <p style="font-size: 1.125rem; opacity: 0.85;">{data.tagline}</p>
+
+    <section style="margin-top: 3rem; padding: 2rem; border: 1px solid #2a2a2a; border-radius: 8px;">
+      <h2 style="margin-top: 0;">{data.hero.headline}</h2>
+      <p>{data.hero.sub}</p>
+      <a href={data.hero.ctaUrl} style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; background: #fff; color: #000; border-radius: 4px; text-decoration: none;">{data.hero.ctaLabel}</a>
+    </section>
+
+    {data.capabilities.length > 0 && (
+      <section style="margin-top: 3rem;">
+        <h2>Capabilities</h2>
+        <ul>
+          {data.capabilities.map((c) => (
+            <li><strong>{c.title}</strong>{c.description && ` — ${c.description}`}</li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {data.techStack.length > 0 && (
+      <section style="margin-top: 2rem;">
+        <h2>Stack</h2>
+        <p>{data.techStack.join(" · ")}</p>
+      </section>
+    )}
+
+    <article style="margin-top: 3rem;">
+      <Content />
+    </article>
+
+    {data.caseStudies.length > 0 && (
+      <section style="margin-top: 3rem;">
+        <h2>Case studies</h2>
+        <ul>
+          {data.caseStudies.map((cs) => (
+            <li>
+              {cs.url ? <a href={cs.url}>{cs.title}</a> : cs.title} — <em>{cs.client}</em>
+              <p style="opacity: 0.7; margin: 0.25rem 0 0 0;">{cs.excerpt}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </main>
+</BaseLayout>

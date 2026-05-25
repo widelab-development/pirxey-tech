@@ -1,0 +1,15 @@
+.background {
+  background-image: url("/assets/images/two-astronauts-on-moon.webp");
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: auto 704px;
+
+  @media (min-width: 1440px) {
+    background-size: auto 938px;
+  }
+
+  @media (min-width: 1920px) {
+    background-position: center;
+    background-size: cover;
+  }
+}

@@ -1,0 +1,9 @@
+.footer {
+  background-image:
+    url("/assets/images/blur-bottom-right--footer.png"),
+    var(--bg-noise-on-light);
+  background-repeat: no-repeat, repeat;
+  background-position:
+    bottom right,
+    center;
+}

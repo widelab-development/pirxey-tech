@@ -1,0 +1,66 @@
+---
+/**
+ * /blog — EN blog listing.
+ * Pulls from blog content collection, filters by locale, sorts by date desc.
+ */
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BlogCard from "../../components/BlogCard.astro";
+import { t, localizedUrl, type Locale } from "../../i18n/ui";
+
+const locale: Locale = "en";
+
+const posts = (
+  await getCollection("blog", (e) => e.data.locale === "en" && !e.data.draft)
+).sort((a, b) => +b.data.publishedAt - +a.data.publishedAt);
+---
+
+<BaseLayout
+  title="Pirxey Blog — engineering, AI, leadership"
+  description="Long-form articles from Pirxey founders and team. Originals + republishes from LinkedIn. Engineering, AI, leadership, culture."
+>
+  <main class="pt-24 lg:pt-28">
+    <section class="grid-container py-12 lg:py-16">
+      <header class="mb-12 max-w-2xl">
+        <p class="typography-label opacity-70 uppercase tracking-wider mb-3">Pirxey blog</p>
+        <h1 class="typography-heading-1">Field notes from the launch pad.</h1>
+        <p class="typography-body-lg mt-4 text-text-on-dark-secondary">
+          Long-form writing from Łukasz, Mateusz, and the Pirxey team. Originals and selected republishes from LinkedIn.
+        </p>
+      </header>
+
+      {posts.length === 0 ? (
+        <div class="rounded-2xl border border-border-on-dark-subtle bg-surface-dark-200/40 p-12 text-center">
+          <p class="typography-heading-4 mb-2">No posts yet.</p>
+          <p class="typography-body text-text-on-dark-secondary">
+            We're seeding the blog with selected LinkedIn articles. First batch incoming.
+          </p>
+          <p class="typography-meta mt-6 opacity-60">
+            Engineers can drop new posts under <code>src/content/blog/en/</code> as MDX.
+          </p>
+        </div>
+      ) : (
+        <ul class="space-y-4">
+          {posts.map((p) => {
+            const slug = p.slug.replace(/^en\//, "");
+            return (
+              <li>
+                <BlogCard
+                  href={`/blog/${slug}/`}
+                  title={p.data.title}
+                  excerpt={p.data.excerpt}
+                  category={p.data.category}
+                  author={p.data.author}
+                  publishedAt={p.data.publishedAt}
+                  heroImage={p.data.heroImage}
+                  readingMinutes={p.data.readingMinutes}
+                  locale={locale}
+                />
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </section>
+  </main>
+</BaseLayout>

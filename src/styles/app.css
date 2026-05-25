@@ -1,0 +1,123 @@
+/**
+ * Pirxey.tech — Tailwind 4 entry.
+ * Mirrors src/styles/globals.css from the Next.js project so ported components
+ * can use the same utility classes (typography-heading-*, grid-container, clip-corners-*).
+ *
+ * Load order: tailwindcss → tokens → fonts → @theme inline → utility classes.
+ */
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@import "./tokens.css";
+@import "./global.css";
+@import "./layout.css";
+@import "./typography.css";
+
+/* ─────────────────────────────────────────────────────────────────────
+ * @theme — make Pirxey brand tokens available as Tailwind utilities.
+ * (e.g. bg-surface-light-100, text-text-on-light-primary, font-space-grotesk)
+ * Mirrors src/styles/globals.css in pirxey-website-nextjs.
+ * ───────────────────────────────────────────────────────────────────── */
+
+@theme inline {
+  --default-transition-duration: 250ms;
+  --default-transition-timing-function: ease;
+
+  --font-fira-sans: "Firasans", "Fira Sans", Tahoma, sans-serif;
+  --font-space-grotesk: "Spacegrotesk", "Space Grotesk", Tahoma, sans-serif;
+  --font-jetbrains-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-sans: var(--font-fira-sans);
+
+  --color-background: #060411;
+  --color-foreground: #f9f9ea;
+
+  /* Brand palette (same hex as Next.js pirxey-website) */
+  --color-beige-100: #f9f9ea;
+  --color-beige-200: #e6e6c9;
+  --color-beige-300: #e9dba1;
+  --color-dark-100: #2e2e2e;
+  --color-dark-200: #1f1f1f;
+  --color-dark-300: #060411;
+  --color-orange-100: #e16c43;
+  --color-orange-200: #ff6026;
+  --color-orange-300: #e64e14;
+  --color-orange-400: #d44e1a;
+  --color-blue-200: #3698fa;
+  --color-blue-300: #1a7fe8;
+  --color-deepskyblue-200: #269ec3;
+  --color-amber-200: #ffa740;
+  --color-amber-300: #eeaa55;
+  --color-gray-50: #e6e6d8;
+  --color-gray-100: #d4d4c7;
+  --color-gray-200: #bbbbb0;
+  --color-gray-300: #b8b8a8;
+  --color-gray-400: #7d7c7b;
+  --color-gray-500: #5a5a56;
+  --color-gray-600: #3a3a3a;
+  --color-gray-700: #2a2a2a;
+
+  /* Semantic surface tokens */
+  --color-surface-dark-100: var(--color-dark-100);
+  --color-surface-dark-200: var(--color-dark-200);
+  --color-surface-dark-300: var(--color-dark-300);
+  --color-surface-light-100: var(--color-beige-100);
+  --color-surface-light-200: var(--color-beige-200);
+  --color-surface-light-300: var(--color-beige-300);
+  --color-surface-overlay-dark: --alpha(var(--color-dark-300) / 60%);
+  --color-surface-overlay-light: --alpha(var(--color-beige-100) / 70%);
+
+  /* Text tokens */
+  --color-text-on-dark-primary: var(--color-beige-100);
+  --color-text-on-dark-secondary: var(--color-gray-200);
+  --color-text-on-dark-disabled: var(--color-gray-500);
+  --color-text-on-light-primary: var(--color-dark-300);
+  --color-text-on-light-secondary: var(--color-gray-400);
+  --color-text-on-light-disabled: var(--color-gray-200);
+  --color-text-accent-on-dark: var(--color-orange-200);
+  --color-text-accent-on-light: var(--color-orange-400);
+  --color-text-link-on-dark: var(--color-blue-200);
+  --color-text-link-on-light: var(--color-blue-300);
+
+  /* Accent tokens */
+  --color-accent-primary: var(--color-orange-200);
+  --color-accent-primary-hover: var(--color-orange-300);
+  --color-accent-primary-muted: var(--color-orange-100);
+  --color-accent-primary-subtle: --alpha(var(--color-orange-200) / 8%);
+  --color-accent-secondary: var(--color-blue-200);
+  --color-accent-secondary-hover: var(--color-blue-300);
+  --color-accent-secondary-muted: var(--color-deepskyblue-200);
+  --color-accent-secondary-subtle: --alpha(var(--color-blue-200) / 8%);
+  --color-accent-tertiary: var(--color-amber-200);
+  --color-accent-tertiary-muted: var(--color-amber-300);
+  --color-accent-tertiary-subtle: --alpha(var(--color-amber-200) / 8%);
+
+  /* Border tokens */
+  --color-border: var(--color-gray-600);
+  --color-border-on-dark: var(--color-gray-600);
+  --color-border-on-dark-subtle: var(--color-gray-700);
+  --color-border-on-light: var(--color-gray-100);
+  --color-border-on-light-subtle: var(--color-gray-50);
+  --color-border-accent: var(--color-orange-200);
+
+  --color-error: #ff3b30;
+  --color-success: #30d158;
+
+  --z-header: 1000;
+  --z-foreground: 990;
+}
+
+:root {
+  --bg-noise-on-light: url("/assets/images/noise-on-light.png");
+  --bg-pastel: url("/assets/images/pastel-background.jpg");
+  --bg-mobile-menu: url("/assets/images/mobile-menu-bg.webp");
+  --layout-section-padding: --spacing(12);
+}
+
+@media (width >= theme("--breakpoint-lg")) {
+  :root { --layout-section-padding: --spacing(14); }
+}
+
+@media (width >= theme("--breakpoint-2xl")) {
+  :root { --layout-section-padding: --spacing(16); }
+}

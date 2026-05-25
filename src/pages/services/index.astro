@@ -1,0 +1,46 @@
+---
+/**
+ * /services — EN services landing.
+ * Lists all services from src/data/services.json, ordered by `order`.
+ * Phase 0 placeholder: minimal UI to verify routing + data wiring.
+ * Real design comes in Phase 4.
+ */
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { t, type Locale } from "../../i18n/ui";
+import servicesData from "../../data/services.json";
+
+const locale: Locale = "en";
+const services = servicesData.services
+  .slice()
+  .sort((a, b) => a.order - b.order);
+
+// Cross-reference: which slugs have MDX content already?
+const mdxServices = await getCollection("services", (e) => e.data.locale === "en");
+const mdxSlugs = new Set(mdxServices.map((s) => s.slug.replace(/^en\//, "")));
+---
+
+<BaseLayout title={t("nav.services", locale)} description="What Pirxey delivers — pick your mission.">
+  <main style="max-width: 960px; margin: 4rem auto; padding: 0 1rem;">
+    <h1>{t("services.heading", locale)}</h1>
+    <p>{t("services.subheading", locale)}</p>
+
+    <ul style="list-style: none; padding: 0; display: grid; gap: 1rem; margin-top: 2rem;">
+      {services.map((s) => {
+        const tr = s.translations[locale];
+        const hasContent = mdxSlugs.has(s.slug);
+        return (
+          <li style="border: 1px solid #2a2a2a; padding: 1.5rem; border-radius: 8px;">
+            <a href={`/services/${s.slug}/`} style="text-decoration: none; color: inherit;">
+              <h2 style="margin: 0 0 0.5rem 0;">{tr.title}</h2>
+              <p style="margin: 0; opacity: 0.85;">{tr.tagline}</p>
+              <p style="margin: 0.75rem 0 0 0; font-size: 0.85rem; opacity: 0.5;">
+                {hasContent ? "✓ content ready" : "stub (no MDX yet)"}
+              </p>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </main>
+</BaseLayout>

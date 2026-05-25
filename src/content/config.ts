@@ -1,5 +1,8 @@
 import { defineCollection, z } from "astro:content";
 
+const LOCALES = ["en", "pl"] as const;
+const localeSchema = z.enum(LOCALES);
+
 const briefs = defineCollection({
   type: "content",
   schema: z.object({
@@ -44,4 +47,92 @@ const briefs = defineCollection({
   }),
 });
 
-export const collections = { briefs };
+/**
+ * Services — per-service SEO landing pages. One MDX per service per locale.
+ * Path convention: src/content/services/<locale>/<slug>.mdx
+ * Frontmatter holds structured data; MDX body holds long-form prose.
+ */
+const services = defineCollection({
+  type: "content",
+  schema: z.object({
+    // slug comes from filename (Astro reserves the `slug` field)
+    locale: localeSchema,
+    title: z.string(),                   // H1 + SEO title fallback
+    eyebrow: z.string().optional(),      // small label above title
+    tagline: z.string(),                 // 1-line punch
+    description: z.string(),             // SEO meta description (150-160 chars)
+    publishedAt: z.coerce.date(),
+    updatedAt: z.coerce.date().optional(),
+    /** Hero block configuration. */
+    hero: z.object({
+      headline: z.string(),
+      sub: z.string(),
+      image: z.string().optional(),
+      ctaLabel: z.string().default("Schedule a discovery call"),
+      ctaUrl: z.string().url(),
+    }),
+    /** Sub-services / capability bullets shown in feature grid. */
+    capabilities: z.array(z.object({
+      title: z.string(),
+      description: z.string().optional(),
+    })).default([]),
+    /** Tech stack chips shown under hero. */
+    techStack: z.array(z.string()).default([]),
+    /** Industries / verticals served by this service. */
+    industries: z.array(z.string()).default([]),
+    /** Case studies highlighted on this page. References blog/briefs by slug. */
+    caseStudies: z.array(z.object({
+      title: z.string(),
+      client: z.string(),
+      excerpt: z.string(),
+      url: z.string().optional(),  // internal route or external link
+    })).default([]),
+    /** Order in the services list (lower = first). */
+    order: z.number().default(0),
+    /** Indexable by search engines once ready. Default false (pre-launch). */
+    indexable: z.boolean().default(false),
+  }),
+});
+
+/**
+ * Blog — long-form articles, including LinkedIn republishes.
+ * Path: src/content/blog/<locale>/<slug>.mdx
+ */
+const blog = defineCollection({
+  type: "content",
+  schema: z.object({
+    // slug comes from filename
+    locale: localeSchema,
+    title: z.string(),
+    excerpt: z.string(),                  // homepage card + meta description
+    publishedAt: z.coerce.date(),
+    updatedAt: z.coerce.date().optional(),
+    author: z.object({
+      name: z.string(),                   // "Łukasz Graliński" / "Mateusz Kapica" / "Pirxey"
+      role: z.string().optional(),
+      avatar: z.string().optional(),
+      linkedinUrl: z.string().url().optional(),
+    }),
+    /** Where this article was originally published, if anywhere. */
+    originalSource: z.object({
+      platform: z.enum(["linkedin", "medium", "twitter", "other"]),
+      url: z.string().url(),
+      publishedAt: z.coerce.date().optional(),
+    }).optional(),
+    category: z.enum([
+      "engineering",
+      "ai",
+      "leadership",
+      "culture",
+      "business",
+      "case-study",
+    ]),
+    tags: z.array(z.string()).default([]),
+    heroImage: z.string().optional(),
+    readingMinutes: z.number().optional(),
+    indexable: z.boolean().default(false),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { briefs, services, blog };

@@ -1,0 +1,54 @@
+---
+/**
+ * BlogCard — listing card for /blog/.
+ * Compact horizontal layout with hero image, category, title, excerpt, author.
+ */
+import { t, type Locale } from "../i18n/ui";
+
+interface Props {
+  href: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  author: { name: string; role?: string; avatar?: string };
+  publishedAt: Date;
+  heroImage?: string;
+  readingMinutes?: number;
+  locale: Locale;
+}
+const { href, title, excerpt, category, author, publishedAt, heroImage, readingMinutes, locale } = Astro.props;
+
+const dateStr = publishedAt.toLocaleDateString(locale === "pl" ? "pl-PL" : "en-US", {
+  year: "numeric", month: "short", day: "numeric",
+});
+const catLabel = t(`blog.categories.${category}` as any, locale);
+---
+
+<article class="group rounded-2xl border border-border-on-dark-subtle bg-surface-dark-200/40 backdrop-blur overflow-hidden hover:border-border-on-dark transition-all">
+  <a href={href} class="flex flex-col md:flex-row gap-6 p-6">
+    {heroImage && (
+      <div class="shrink-0 md:w-48 h-32 md:h-auto rounded-xl overflow-hidden">
+        <img src={heroImage} alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+      </div>
+    )}
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-3 typography-label opacity-70 mb-2">
+        <span class="text-accent-primary uppercase tracking-wider">{catLabel}</span>
+        <span>·</span>
+        <time datetime={publishedAt.toISOString()}>{dateStr}</time>
+        {readingMinutes && (
+          <>
+            <span>·</span>
+            <span>{readingMinutes} {t("blog.minutesRead", locale)}</span>
+          </>
+        )}
+      </div>
+      <h3 class="typography-heading-3 mb-2 group-hover:text-accent-primary transition-colors">{title}</h3>
+      <p class="typography-body text-text-on-dark-secondary line-clamp-2">{excerpt}</p>
+      <p class="typography-meta mt-4 text-text-on-dark-secondary">
+        {t("blog.byAuthor", locale)} <span class="text-text-on-dark-primary">{author.name}</span>
+        {author.role && <span class="opacity-60"> · {author.role}</span>}
+      </p>
+    </div>
+  </a>
+</article>

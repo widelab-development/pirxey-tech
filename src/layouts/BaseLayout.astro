@@ -1,7 +1,10 @@
 ---
-import "@styles/global.css";
+import "@styles/app.css";
 import SEO from "@components/SEO.astro";
 import SpaceCanvas from "@components/react/SpaceCanvas.tsx";
+import { Header } from "@components/layout/header/index.tsx";
+import { Footer } from "@components/layout/footer/index.tsx";
+import { getLocaleFromPath, t, localizedUrl, type Locale } from "../i18n/ui";
 
 interface Props {
   title: string;
@@ -14,19 +17,62 @@ interface Props {
   tags?: string[];
   jsonLd?: Record<string, any>;
   noindex?: boolean;
+  /** Hide site Header/Footer (briefs use their own chrome). */
+  bare?: boolean;
 }
+
 const props = Astro.props;
+const locale: Locale = getLocaleFromPath(Astro.url.pathname);
+
+const navLinks = [
+  { text: t("nav.services", locale), href: localizedUrl("/services/", locale), type: "link" as const },
+  { text: t("nav.blog", locale), href: localizedUrl("/blog/", locale), type: "link" as const },
+  { text: t("nav.briefs", locale), href: localizedUrl("/briefs/", locale), type: "link" as const },
+  { text: t("nav.contact", locale), href: "mailto:sales@pirxey.com", type: "cta" as const },
+];
+
+const currentPath = Astro.url.pathname.replace(/^\/pl/, "") || "/";
+const otherLocale: Locale = locale === "en" ? "pl" : "en";
+const localeSwitch = {
+  href: localizedUrl(currentPath, otherLocale),
+  label: otherLocale === "en" ? "EN" : "PL",
+};
+
+const logoHref = localizedUrl("/", locale);
 ---
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
 <head>
   <meta charset="utf-8" />
   <SEO {...props} />
 </head>
-<body>
-  {/* Pixel-faithful port of pirxey.com's animated WebGL star field.
-      Fixed at z-index -1, fills viewport, all dark sections show through. */}
+<body class="bg-surface-dark-300 text-text-on-dark-primary">
   <SpaceCanvas client:only="react" />
+
+  {!props.bare && (
+    <Header
+      navigationLinks={navLinks}
+      logoHref={logoHref}
+      localeSwitch={localeSwitch}
+      client:load
+    />
+  )}
+
   <slot />
+
+  {!props.bare && (
+    <Footer
+      address={"Aleja Grunwaldzka 472\n80-309 Gdańsk, Polska"}
+      contactTitle={locale === "pl" ? "Masz pytanie?" : "Have a question?"}
+      contactEmail={{ text: "sales@pirxey.com", href: "mailto:sales@pirxey.com" }}
+      sales={{
+        name: "Michał Kacprowicz",
+        title: "Head of Sales",
+        email: "michal@pirxey.com",
+        number: "+48 601 610 990",
+      }}
+      salesIntro={locale === "pl" ? "Napisz wprost do Michała" : "Reach out to Mike directly"}
+    />
+  )}
 </body>
 </html>

@@ -1,0 +1,54 @@
+{
+  "_comment": "Technologies grid section. Grouped for the 'Technologies we use' (1440 + 1920 XL=2600px Figma variant). Add new tech = append + drop /assets/tech/<slug>.svg.",
+  "groups": [
+    {
+      "label": "AI & Agents",
+      "items": [
+        { "slug": "claude", "name": "Claude", "logo": "/assets/tech/claude.svg" },
+        { "slug": "openai", "name": "OpenAI", "logo": "/assets/tech/openai.svg" },
+        { "slug": "cursor", "name": "Cursor", "logo": "/assets/tech/cursor.svg" },
+        { "slug": "copilot", "name": "GitHub Copilot", "logo": "/assets/tech/copilot.svg" }
+      ]
+    },
+    {
+      "label": "Frontend",
+      "items": [
+        { "slug": "react", "name": "React", "logo": "/assets/tech/react.svg" },
+        { "slug": "nextjs", "name": "Next.js", "logo": "/assets/tech/nextjs.svg" },
+        { "slug": "astro", "name": "Astro", "logo": "/assets/tech/astro.svg" },
+        { "slug": "angular", "name": "Angular", "logo": "/assets/tech/angular.svg" },
+        { "slug": "react-native", "name": "React Native", "logo": "/assets/tech/react-native.svg" },
+        { "slug": "typescript", "name": "TypeScript", "logo": "/assets/tech/typescript.svg" }
+      ]
+    },
+    {
+      "label": "Backend",
+      "items": [
+        { "slug": "nodejs", "name": "Node.js", "logo": "/assets/tech/nodejs.svg" },
+        { "slug": "nestjs", "name": "NestJS", "logo": "/assets/tech/nestjs.svg" },
+        { "slug": "go", "name": "Go", "logo": "/assets/tech/go.svg" },
+        { "slug": "dotnet", "name": ".NET", "logo": "/assets/tech/dotnet.svg" },
+        { "slug": "postgresql", "name": "PostgreSQL", "logo": "/assets/tech/postgresql.svg" }
+      ]
+    },
+    {
+      "label": "Cloud & Infra",
+      "items": [
+        { "slug": "aws", "name": "AWS", "logo": "/assets/tech/aws.svg" },
+        { "slug": "azure", "name": "Azure", "logo": "/assets/tech/azure.svg" },
+        { "slug": "gcp", "name": "GCP", "logo": "/assets/tech/gcp.svg" },
+        { "slug": "docker", "name": "Docker", "logo": "/assets/tech/docker.svg" },
+        { "slug": "terraform", "name": "Terraform", "logo": "/assets/tech/terraform.svg" },
+        { "slug": "vercel", "name": "Vercel", "logo": "/assets/tech/vercel.svg" },
+        { "slug": "supabase", "name": "Supabase", "logo": "/assets/tech/supabase.svg" }
+      ]
+    },
+    {
+      "label": "Crypto",
+      "items": [
+        { "slug": "solidity", "name": "Solidity", "logo": "/assets/tech/solidity.svg" },
+        { "slug": "rust", "name": "Rust", "logo": "/assets/tech/rust.svg" }
+      ]
+    }
+  ]
+}

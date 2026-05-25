@@ -1,0 +1,146 @@
+{
+  "$schema": "./services.schema.json",
+  "_comment": "Services meta index. Long-form content lives in src/content/services/<locale>/<slug>.mdx. This file is used by /services landing to list and order services. To add new service: append here + create MDX per locale.",
+  "services": [
+    {
+      "slug": "ai-native-development",
+      "order": 1,
+      "icon": "sparkles",
+      "translations": {
+        "en": {
+          "title": "AI-Native Development",
+          "tagline": "Build smarter, ship faster — production-ready software with autonomous AI agents and senior engineers.",
+          "shortDescription": "MVPs and full-scale systems built with AI-first methodology. No SaaS lock-in, no hourly billing guesswork."
+        },
+        "pl": {
+          "title": "AI-Native Development",
+          "tagline": "Buduj mądrzej, dostarczaj szybciej — produkcyjne oprogramowanie z autonomicznymi agentami AI i seniorami.",
+          "shortDescription": "MVP i pełne systemy budowane AI-first. Bez vendor lock-in, bez zgadywanego billingu godzinowego."
+        }
+      },
+      "capabilities": ["MVP development", "AI-assisted full-cycle delivery", "Architecture & discovery", "Production hardening"],
+      "techStack": ["Claude", "Codex", "Copilot", "Cursor"],
+      "industries": ["Startups", "SaaS", "Enterprise"]
+    },
+    {
+      "slug": "rapid-ai-prototyping",
+      "order": 2,
+      "icon": "rocket",
+      "translations": {
+        "en": {
+          "title": "Rapid AI Prototyping",
+          "tagline": "Launch your idea into orbit in weeks. Validated MVPs with AI-assisted velocity.",
+          "shortDescription": "Define core value → AI-Sprint delivery → working prototype in front of real users → harden for production."
+        },
+        "pl": {
+          "title": "Rapid AI Prototyping",
+          "tagline": "Wystrzel swój pomysł na orbitę w tygodnie. Walidowane MVP z AI-velocity.",
+          "shortDescription": "Definicja wartości → AI-Sprint delivery → działający prototyp przed użytkownikami → utwardzenie produkcyjne."
+        }
+      },
+      "capabilities": ["Product discovery", "Architecture & Discovery", "AI-Sprint Delivery", "Agentic workflow", "Scale readiness", "MVP validation"],
+      "techStack": ["Cursor", "Supabase", "Vercel", "Next.js"],
+      "industries": ["Founders", "Early-stage", "Innovation teams"]
+    },
+    {
+      "slug": "ai-custom-implementation",
+      "order": 3,
+      "icon": "brain",
+      "translations": {
+        "en": {
+          "title": "AI Custom Implementation",
+          "tagline": "Tailored AI solutions integrated into your existing stack — ML, NLP, predictive analytics.",
+          "shortDescription": "We integrate AI seamlessly: machine learning models, natural language processing, predictive analytics — without disrupting your workflow."
+        },
+        "pl": {
+          "title": "AI Custom Implementation",
+          "tagline": "Dopasowane rozwiązania AI zintegrowane z Twoim stackiem — ML, NLP, predykcja.",
+          "shortDescription": "Bezszwowo integrujemy AI: modele ML, NLP, predictive analytics — bez zaburzania Twojego workflow."
+        }
+      },
+      "capabilities": ["Machine Learning", "Natural Language Processing", "AI Integration", "Predictive Analytics"],
+      "techStack": ["ChatGPT-4o", "Google AI Studio", "Azure AI Studio"],
+      "industries": ["Enterprise", "MedTech", "Banking", "Retail"]
+    },
+    {
+      "slug": "front-end-mobile-development",
+      "order": 4,
+      "icon": "monitor",
+      "translations": {
+        "en": {
+          "title": "Front-End & Mobile Development",
+          "tagline": "Stellar interfaces across the galaxy — web and mobile, pixel-perfect and performant.",
+          "shortDescription": "User interfaces and mobile apps that captivate. React, Angular, React Native, cross-platform delivery."
+        },
+        "pl": {
+          "title": "Front-End & Mobile Development",
+          "tagline": "Gwiazdorskie interfejsy z galaktyki — web i mobile, pixel-perfect i wydajne.",
+          "shortDescription": "Interfejsy i aplikacje mobilne, które przyciągają. React, Angular, React Native, cross-platform delivery."
+        }
+      },
+      "capabilities": ["React", "Angular", "React Native", "Responsive design", "User Experience", "iOS / Android"],
+      "techStack": ["React", "Angular", "React Native", "TypeScript", "Tailwind CSS", "Framer Motion", "Vite"],
+      "industries": ["Banking", "MedTech", "E-commerce", "SaaS"]
+    },
+    {
+      "slug": "back-end-development",
+      "order": 5,
+      "icon": "server",
+      "translations": {
+        "en": {
+          "title": "Back-End Development",
+          "tagline": "Robust, interstellar backbone for your applications — scalable and secure.",
+          "shortDescription": "APIs, databases, server infrastructure, payment processing. Built to scale across the cosmos."
+        },
+        "pl": {
+          "title": "Back-End Development",
+          "tagline": "Stabilny, międzygwiezdny szkielet Twojej aplikacji — skalowalny i bezpieczny.",
+          "shortDescription": "API, bazy danych, infrastruktura serwerowa, przetwarzanie płatności. Zbudowane do skali."
+        }
+      },
+      "capabilities": ["API Development", "Database Management", "Server-Side Logic", "Scalability", "Security"],
+      "techStack": ["Node.js", "NestJS", "Go", "C#", ".NET", "Laravel", "PostgreSQL", "MySQL", "Docker", "Stripe"],
+      "industries": ["Enterprise", "Fintech", "SaaS"]
+    },
+    {
+      "slug": "cloud-infrastructure-devops",
+      "order": 6,
+      "icon": "cloud",
+      "translations": {
+        "en": {
+          "title": "Cloud Infrastructure & DevOps",
+          "tagline": "Systems always running smoothly — even in turbulent space weather.",
+          "shortDescription": "Cloud migration, infrastructure optimization, CI/CD. AWS, Azure, GCP — pick your orbit."
+        },
+        "pl": {
+          "title": "Cloud Infrastructure & DevOps",
+          "tagline": "Systemy zawsze działające płynnie — nawet w turbulentnej kosmicznej pogodzie.",
+          "shortDescription": "Migracja do chmury, optymalizacja infrastruktury, CI/CD. AWS, Azure, GCP — wybierz orbitę."
+        }
+      },
+      "capabilities": ["Cloud Migration", "Infrastructure Optimization", "Continuous Integration", "Continuous Delivery", "Serverless", "Cloud-first development"],
+      "techStack": ["AWS", "Azure", "GCP", "Docker", "Terraform", "Pulumi", "Datadog", "Sentry"],
+      "industries": ["Enterprise", "Scaling startups"]
+    },
+    {
+      "slug": "crypto-blockchain-development",
+      "order": 7,
+      "icon": "shield-link",
+      "translations": {
+        "en": {
+          "title": "Crypto / Blockchain Development",
+          "tagline": "Secure, transparent blockchain solutions — smart contracts to DApps.",
+          "shortDescription": "Smart contracts, decentralized apps, DeFi, Web3 — innovative blockchain projects brought to the forefront."
+        },
+        "pl": {
+          "title": "Crypto / Blockchain Development",
+          "tagline": "Bezpieczne, transparentne rozwiązania blockchain — smart kontrakty po DApps.",
+          "shortDescription": "Smart kontrakty, DApps, DeFi, Web3 — innowacyjne projekty blockchain wyniesione na pierwszy plan."
+        }
+      },
+      "capabilities": ["Smart Contracts", "Decentralized Apps", "Blockchain Integration", "Cryptocurrency Solutions", "DeFi", "Security Tokens"],
+      "techStack": ["Solidity", "Rust", "Web3.0"],
+      "industries": ["Crypto", "Fintech", "Web3 startups"]
+    }
+  ]
+}

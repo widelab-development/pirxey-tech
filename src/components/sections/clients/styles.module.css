@@ -1,0 +1,11 @@
+.surface {
+  background-image:
+    url("/assets/images/decor-left--clients.svg"),
+    url("/assets/images/blur-top-left--clients.png"), var(--bg-noise-on-light);
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-position:
+    center left,
+    top left,
+    center;
+  background-size: auto;
+}

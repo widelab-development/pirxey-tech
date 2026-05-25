@@ -1,0 +1,64 @@
+.featureContainer {
+  --icon-size: 60px;
+  --icon-indent-radius: 10px;
+  --margin-inline-start: calc(
+    var(--icon-size) *
+    0.5 +
+    var(--icon-indent-radius)
+  );
+  --rotate: 0deg;
+  position: relative;
+
+  &:hover {
+    --rotate: 45deg;
+  }
+
+  .icon {
+    position: absolute;
+    display: inline-grid;
+    place-items: center;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    width: calc(var(--icon-size) + var(--icon-indent-radius) * 2);
+    height: calc(var(--icon-size) + var(--icon-indent-radius) * 2);
+
+    @media (width >= 1024px) {
+      top: 50%;
+      left: calc((var(--icon-size) + var(--icon-indent-radius) * 2) * -0.5);
+      transform: translateY(-50%) rotate(var(--rotate, 0deg));
+      transition: transform var(--default-transition-duration)
+        var(--default-transition-timing-function);
+    }
+
+    & > img {
+      width: var(--icon-size);
+      height: var(--icon-size);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-color: var(--color-black);
+      border-radius: 9999px;
+      border: 1px solid var(--color-surface-light-100);
+      z-index: -2;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      inset-block-start: 0;
+      background-color: var(--color-black);
+      border-radius: 9999px;
+      z-index: -1;
+
+      @media (width >= 1024px) {
+        inset-block-start: 1px;
+        inset-inline-start: 0;
+      }
+    }
+  }
+}

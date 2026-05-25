@@ -1,0 +1,50 @@
+---
+/**
+ * /pl/services — PL services listing.
+ * Same JSON data, PL translations from services.json.
+ */
+import { getCollection } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { t, type Locale } from "../../../i18n/ui";
+import servicesData from "../../../data/services.json";
+
+const locale: Locale = "pl";
+const services = servicesData.services
+  .slice()
+  .sort((a, b) => a.order - b.order);
+
+const mdxServices = await getCollection("services", (e) => e.data.locale === "pl");
+const mdxSlugs = new Set(mdxServices.map((s) => s.slug.replace(/^pl\//, "")));
+---
+
+<BaseLayout title={t("nav.services", locale)} description="Wszystkie usługi Pirxey — wybierz misję.">
+  <main class="pt-24 lg:pt-28">
+    <section class="grid-container py-12 lg:py-16">
+      <header class="mb-12 max-w-2xl">
+        <h1 class="typography-heading-1">{t("services.heading", locale)}</h1>
+        <p class="typography-body-lg mt-3 text-text-on-dark-secondary">{t("services.subheading", locale)}</p>
+      </header>
+
+      <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {services.map((s) => {
+          const tr = s.translations[locale];
+          const hasContent = mdxSlugs.has(s.slug);
+          return (
+            <li>
+              <a
+                href={hasContent ? `/pl/services/${s.slug}/` : `/services/${s.slug}/`}
+                class="group block h-full rounded-2xl border border-border-on-dark-subtle bg-surface-dark-200/40 backdrop-blur p-6 transition-all hover:border-border-on-dark hover:bg-surface-dark-200/70"
+              >
+                <h3 class="typography-heading-4">{tr.title}</h3>
+                <p class="typography-body mt-3 text-text-on-dark-secondary">{tr.tagline}</p>
+                <p class="typography-meta mt-4 opacity-60">
+                  {hasContent ? "✓ wersja PL gotowa" : "→ czyta wersję EN (tłumaczenie w toku)"}
+                </p>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  </main>
+</BaseLayout>

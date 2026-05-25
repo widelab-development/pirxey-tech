@@ -1,0 +1,144 @@
+---
+/**
+ * /pl/ — Polish marketing homepage.
+ * Same React sections as /, with PL copy.
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { HeroMain } from "../../components/sections/hero-main/index.tsx";
+import { Clients } from "../../components/sections/clients/index.tsx";
+import { Features } from "../../components/sections/features/index.tsx";
+import { Technologies } from "../../components/sections/technologies/index.tsx";
+import { SplitImage } from "../../components/sections/split-image/index.tsx";
+import { FeaturesLight } from "../../components/sections/features-light/index.tsx";
+import clientsData from "../../data/clients.json";
+import servicesData from "../../data/services.json";
+import technologiesData from "../../data/technologies.json";
+
+const locale = "pl";
+
+const clientItems = clientsData.clients.map((c, i) => ({
+  key: c.slug,
+  name: c.name,
+  clientType: (i % 3 === 0 ? "Enterprise" : i % 3 === 1 ? "Scale-up" : "Start-up") as "Enterprise" | "Scale-up" | "Start-up",
+  projectType: ["Platforma web","Aplikacja mobilna","Narzędzia AI","Pipeline danych","E-commerce","DevOps"][i % 6],
+  websiteUrl: c.url,
+  logo: c.logo,
+}));
+
+const featureItems = servicesData.services
+  .slice()
+  .sort((a, b) => a.order - b.order)
+  .map((s) => ({
+    key: s.slug,
+    title: s.translations.pl.title,
+    text: s.translations.pl.tagline,
+    href: `/pl/services/${s.slug}/`,
+  }));
+
+const techItems = technologiesData.groups.flatMap((g) =>
+  g.items.map((t) => ({ key: `${g.label}-${t.slug}`, name: t.name, icon: t.logo }))
+);
+
+const specialFeatures = [
+  {
+    key: "make-sense",
+    titleStart: "Zdrowy",
+    titleEnd: "rozsądek.",
+    description: "Mniej procesu, więcej myślenia. Decyzje optymalne, nie polityczne.",
+    image: "/assets/images/area-moon.webp",
+  },
+  {
+    key: "senior-access",
+    titleStart: "Bezpośredni kontakt",
+    titleEnd: "z seniorem.",
+    description: "Twój Slack ma seniora, nie account managera.",
+    image: "/assets/images/astronaut-on-moon.png",
+  },
+  {
+    key: "transparency",
+    titleStart: "Pełna",
+    titleEnd: "transparentność.",
+    description: "Codzienny status, weekly demo, otwarty budget. Bez niespodzianek.",
+    image: "/assets/images/two-astronauts-on-moon.webp",
+  },
+];
+
+const splitSections = [
+  {
+    key: "judgment",
+    title: "Senior engineering judgment, AI-assisted velocity.",
+    text: "Architekci i seniorzy decydują o trade-offach. AI obsługuje boilerplate. Dostarczasz 3-5× szybciej bez utraty jakości.",
+    image: "/assets/images/area-astronaut.webp",
+  },
+  {
+    key: "sprints",
+    title: "AI-Sprint delivery — wynik, nie godziny.",
+    text: "8-tygodniowe sprinty z jasnymi milestonami. Płacisz za rezultat. Bez ruletki godzinowej, bez przekroczeń budżetu.",
+    image: "/assets/images/area-moon.webp",
+  },
+  {
+    key: "talent",
+    title: "Talent density: 130+ inżynierów w sieci.",
+    text: "Dopasowujemy projekt do talentu, nie talent do dostępności. Senior-heavy z założenia, juniorzy mentorowani — nie parkowani.",
+    image: "/assets/images/two-astronauts-on-moon.webp",
+  },
+];
+---
+
+<BaseLayout
+  title="Pirxey — AI-Native software development dla poważnych zespołów"
+  description="Pirxey dostarcza produkcyjne oprogramowanie z AI velocity. Seniorzy + autonomiczne agenty AI. MVP, pełne systemy, integracje AI dla klientów z USA, Izraela i Europy."
+  type="website"
+>
+  <main class="space-y-section-padding">
+    <HeroMain
+      stickerText="Engineering z AI velocity"
+      title="Dostarczaj produkcyjne oprogramowanie z prędkością AI."
+      text="Łączymy seniorów z autonomicznymi agentami AI — Claude, Codex, Copilot — aby przekuwać złożone idee w czysty, skalowalny kod. Bez SaaS lock-in. Bez godzinowej ruletki rozliczeniowej."
+      links={[
+        { key: "primary", text: "Porozmawiajmy", href: "mailto:sales@pirxey.com", variant: "default" },
+        { key: "secondary", text: "Zobacz usługi", href: "/pl/services/", variant: "inverted" },
+      ]}
+      client:load
+    />
+
+    <Clients
+      title="Tworzyliśmy oprogramowanie dla"
+      clients={clientItems}
+      stickerText="20+ zrealizowanych misji"
+      cta={{ text: "Zobacz nasze projekty", href: "/pl/blog/" }}
+      client:load
+    />
+
+    <Features
+      eyebrow="Profile misji"
+      title="Oto jak możemy Ci pomóc."
+      features={featureItems}
+      cta={{ text: "Wszystkie usługi", href: "/pl/services/" }}
+      client:visible
+    />
+
+    <Technologies
+      eyebrow="Stack"
+      title="Technologie, których używamy."
+      technologies={techItems}
+      client:visible
+    />
+
+    <SplitImage
+      title="Velocity bez chaosu."
+      sections={splitSections}
+      startingOrientation="imageRight"
+      cta={{ text: "Porozmawiaj z seniorem", href: "mailto:sales@pirxey.com" }}
+      client:visible
+    />
+
+    <FeaturesLight
+      title="Co nas wyróżnia."
+      features={specialFeatures}
+      stickerText="Inżynieria, której nie wstydzimy się pokazać klientowi"
+      cta={{ text: "Zacznij projekt", href: "mailto:sales@pirxey.com" }}
+      client:visible
+    />
+  </main>
+</BaseLayout>

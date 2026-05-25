@@ -1,0 +1,62 @@
+---
+/**
+ * /pl/blog — PL blog listing.
+ */
+import { getCollection } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import BlogCard from "../../../components/BlogCard.astro";
+import { t, type Locale } from "../../../i18n/ui";
+
+const locale: Locale = "pl";
+
+const posts = (
+  await getCollection("blog", (e) => e.data.locale === "pl" && !e.data.draft)
+).sort((a, b) => +b.data.publishedAt - +a.data.publishedAt);
+---
+
+<BaseLayout
+  title="Pirxey Blog — engineering, AI, leadership"
+  description="Długie teksty od founderów Pirxey i zespołu. Originalne + republiki z LinkedIn."
+>
+  <main class="pt-24 lg:pt-28">
+    <section class="grid-container py-12 lg:py-16">
+      <header class="mb-12 max-w-2xl">
+        <p class="typography-label opacity-70 uppercase tracking-wider mb-3">Blog Pirxey</p>
+        <h1 class="typography-heading-1">Notatki z platformy startowej.</h1>
+        <p class="typography-body-lg mt-4 text-text-on-dark-secondary">
+          Długie teksty od Łukasza, Mateusza i zespołu Pirxey. Originały + wybrane republiki z LinkedIn.
+        </p>
+      </header>
+
+      {posts.length === 0 ? (
+        <div class="rounded-2xl border border-border-on-dark-subtle bg-surface-dark-200/40 p-12 text-center">
+          <p class="typography-heading-4 mb-2">Jeszcze brak postów po polsku.</p>
+          <p class="typography-body text-text-on-dark-secondary">
+            Sprawdź <a href="/blog/" class="text-text-accent-on-dark underline">angielską wersję</a>.
+          </p>
+        </div>
+      ) : (
+        <ul class="space-y-4">
+          {posts.map((p) => {
+            const slug = p.slug.replace(/^pl\//, "");
+            return (
+              <li>
+                <BlogCard
+                  href={`/pl/blog/${slug}/`}
+                  title={p.data.title}
+                  excerpt={p.data.excerpt}
+                  category={p.data.category}
+                  author={p.data.author}
+                  publishedAt={p.data.publishedAt}
+                  heroImage={p.data.heroImage}
+                  readingMinutes={p.data.readingMinutes}
+                  locale={locale}
+                />
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </section>
+  </main>
+</BaseLayout>

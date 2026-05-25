@@ -1,0 +1,73 @@
+---
+/**
+ * /blog/[slug] — single blog post.
+ */
+import { getCollection, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { t, type Locale } from "../../i18n/ui";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", (e) => e.data.locale === "en" && !e.data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.slug.replace(/^en\//, "") },
+    props: { post },
+  }));
+}
+
+interface Props { post: CollectionEntry<"blog">; }
+const { post } = Astro.props;
+const { Content } = await post.render();
+const data = post.data;
+const locale: Locale = "en";
+
+const dateStr = data.publishedAt.toLocaleDateString("en-US", {
+  year: "numeric", month: "long", day: "numeric",
+});
+const catLabel = t(`blog.categories.${data.category}` as any, locale);
+---
+
+<BaseLayout
+  title={`${data.title} — Pirxey blog`}
+  description={data.excerpt}
+  type="article"
+  publishedAt={data.publishedAt}
+  updatedAt={data.updatedAt}
+  author={{ name: data.author.name, url: data.author.linkedinUrl }}
+  noindex={!data.indexable}
+>
+  <main class="pt-24 lg:pt-28">
+    <article class="grid-container py-12 lg:py-16">
+      <header class="max-w-3xl mb-10">
+        <div class="flex items-center gap-3 typography-label opacity-70 mb-4">
+          <span class="text-accent-primary uppercase tracking-wider">{catLabel}</span>
+          <span>·</span>
+          <time datetime={data.publishedAt.toISOString()}>{dateStr}</time>
+          {data.readingMinutes && (
+            <>
+              <span>·</span>
+              <span>{data.readingMinutes} {t("blog.minutesRead", locale)}</span>
+            </>
+          )}
+        </div>
+        <h1 class="typography-heading-1">{data.title}</h1>
+        <p class="typography-body-lg mt-4 text-text-on-dark-secondary">{data.excerpt}</p>
+        <p class="typography-meta mt-6">
+          {t("blog.byAuthor", locale)} <span class="text-text-on-dark-primary">{data.author.name}</span>
+          {data.author.role && <span class="opacity-60"> · {data.author.role}</span>}
+        </p>
+        {data.originalSource && (
+          <p class="typography-meta mt-2 opacity-70">
+            {t("blog.originalOn", locale)}{" "}
+            <a href={data.originalSource.url} class="text-text-accent-on-dark underline" target="_blank" rel="noopener">
+              {data.originalSource.platform === "linkedin" ? "LinkedIn" : data.originalSource.platform}
+            </a>
+          </p>
+        )}
+      </header>
+
+      <div class="prose prose-invert prose-lg max-w-3xl">
+        <Content />
+      </div>
+    </article>
+  </main>
+</BaseLayout>

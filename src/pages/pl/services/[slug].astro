@@ -1,0 +1,59 @@
+---
+/**
+ * /pl/services/[slug] — PL service detail.
+ * Same renderer as EN version. Reads from services collection filtered by locale=pl.
+ */
+import { getCollection, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("services", (e) => e.data.locale === "pl");
+  return entries.map((entry) => ({
+    params: { slug: entry.slug.replace(/^pl\//, "") },
+    props: { entry },
+  }));
+}
+
+interface Props { entry: CollectionEntry<"services">; }
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const data = entry.data;
+---
+
+<BaseLayout title={data.title} description={data.description} noindex={!data.indexable}>
+  <main class="pt-24 lg:pt-28">
+    <article class="grid-container py-12 lg:py-16">
+      <header class="max-w-3xl mb-10">
+        {data.eyebrow && <p class="typography-label opacity-70 uppercase tracking-wider mb-3">{data.eyebrow}</p>}
+        <h1 class="typography-heading-1">{data.title}</h1>
+        <p class="typography-body-lg mt-4 text-text-on-dark-secondary">{data.tagline}</p>
+      </header>
+
+      <section class="rounded-3xl bg-surface-dark-200/40 backdrop-blur border border-border-on-dark-subtle p-8 lg:p-12 mb-12">
+        <h2 class="typography-heading-2 mb-4">{data.hero.headline}</h2>
+        <p class="typography-body-lg text-text-on-dark-secondary mb-6">{data.hero.sub}</p>
+        <a href={data.hero.ctaUrl} class="typography-link inline-flex items-center gap-2 rounded-full bg-accent-primary px-6 py-3 text-white hover:bg-accent-primary-hover transition-colors">
+          {data.hero.ctaLabel}
+        </a>
+      </section>
+
+      {data.capabilities.length > 0 && (
+        <section class="mb-12">
+          <h2 class="typography-heading-3 mb-6">Możliwości</h2>
+          <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {data.capabilities.map((c) => (
+              <li class="rounded-xl border border-border-on-dark-subtle p-5">
+                <h3 class="typography-heading-5 mb-2">{c.title}</h3>
+                {c.description && <p class="typography-body text-text-on-dark-secondary">{c.description}</p>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <div class="prose prose-invert prose-lg max-w-3xl">
+        <Content />
+      </div>
+    </article>
+  </main>
+</BaseLayout>

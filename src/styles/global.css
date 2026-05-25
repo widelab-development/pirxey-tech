@@ -27,6 +27,15 @@
 @font-face { font-family: "Firasans"; font-weight: 600; font-style: normal; src: local("Fira Sans"); }
 @font-face { font-family: "Firasans"; font-weight: 700; font-style: normal; src: local("Fira Sans"); }
 
+/* AstronautSticker float animation (ported from Next.js styled-jsx block) */
+.sticker-float {
+  animation: stickerFloat 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes stickerFloat {
+  0%, 100% { transform: translateY(5px); }
+  50%      { transform: translateY(-5px); }
+}
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; background: var(--bg); }
 html, body { margin: 0; padding: 0; }

@@ -1,0 +1,513 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import TopBar from "@components/TopBar.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import Footer from "@components/Footer.astro";
+import BriefThumbnail from "@components/BriefThumbnail.astro";
+
+/**
+ * Homepage — registry of all published Mission Briefs.
+ * Newest brief becomes the "featured" card; the rest list below.
+ * Visually mirrors the Pirxey AI LP composition: image-bg hero,
+ * rounded 24px sections in alternating dark/light themes, stars CTA.
+ */
+const briefs = (await getCollection("briefs", ({ data }) => !data.draft))
+  .sort((a, b) => +b.data.publishedAt - +a.data.publishedAt);
+
+const featured = briefs[0];
+const rest = briefs.slice(1);
+---
+<BaseLayout
+  bare
+  title="Pirxey · Mission Briefs — interactive blog posts for engineering teams"
+  description="Pirxey Mission Briefs — short, hands-on deep-dives on AI engineering, productivity, and shipping software at scale. Each post comes with an interactive widget, the Skills, Gems and GPTs we built around it, and the sources behind it."
+  type="website"
+>
+  <TopBar
+    mission={null}
+    nav={[
+      { label: "Briefs", href: "#briefs", active: true },
+      { label: "About", href: "#about" },
+    ]}
+    ctaLabel="Pirxey.com"
+    ctaHref="https://pirxey.com"
+  />
+
+  {/* HERO — live pirxey.com composition: cream + astronaut + planet */}
+  <section class="reg-hero">
+    <img class="hero-planet" src="/brand/pirxey-hero-planet.webp" alt="" aria-hidden="true" loading="eager" />
+    <img class="hero-astronaut" src="/brand/pirxey-hero-astronaut.webp" alt="" aria-hidden="true" loading="eager" />
+    <div class="hero-noise"></div>
+
+    <div class="hero-inner">
+      <div class="hero-stars reveal" aria-hidden="true">
+        <img src="/brand/pirxey-stars-icon.svg" alt="" width="56" height="56" />
+      </div>
+
+      <div class="hero-eyebrow reveal">
+        <span class="he-tag"><span class="dot"></span>Mission Briefs · Live archive</span>
+        <span class="he-sep">/</span>
+        <span class="he-author">by the team at <strong>Pirxey</strong></span>
+      </div>
+
+      <h1 class="reveal delay-1">
+        Stay sharp in the <em>AI Era.</em><br>
+        One interactive brief at a time.
+      </h1>
+
+      <p class="hero-sub reveal delay-2">
+        Each brief takes <strong>one concept</strong> from the trenches of shipping real software and makes it hands-on: a <strong>working widget</strong> to test the idea, the <strong>Skills, Gems and custom GPTs</strong> we built around it, and the <strong>sources</strong> behind it.
+      </p>
+
+      <p class="hero-kicker reveal delay-3">
+        The 2026 way to share know-how — <em>tools you can use,</em> not slides to scroll.
+      </p>
+
+      {featured && (
+        <a class="hero-cta reveal delay-4" href={`/briefs/${featured.slug}/`}>
+          <span>Read the newest brief · #{featured.data.id}</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+        </a>
+      )}
+    </div>
+  </section>
+
+  {/* FEATURED BRIEF — dark section, big card */}
+  {featured && (
+    <Section
+      theme="dark"
+      id="briefs"
+      eyebrow="Latest · just published"
+      titleHtml={`Brief #${featured.data.id} — <em>${featured.data.title}</em>`}
+      sub={featured.data.subtitle ?? ""}
+    >
+      <a class="featured-card" href={`/briefs/${featured.slug}/`}>
+        <div class="featured-left">
+          <div class="feat-meta">
+            <span class="id">#{featured.data.id}</span>
+            <time datetime={featured.data.publishedAt.toISOString().slice(0,10)}>
+              {featured.data.publishedAt.toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})}
+            </time>
+            <span class="dot-sep">·</span>
+            <span class="tags">{featured.data.tags?.join(" · ") ?? ""}</span>
+          </div>
+          <h3>{featured.data.title}</h3>
+          <p class="desc">{featured.data.description}</p>
+          {featured.data.kit.length > 0 && (
+            <div class="kit">
+              <span class="kit-label">In this brief</span>
+              <ul>
+                {featured.data.kit.map((line) => (
+                  <li><span class="bullet">◆</span><span set:html={line} /></li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <span class="open-arrow">Open brief
+            <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+          </span>
+        </div>
+        <div class="featured-right">
+          <BriefThumbnail
+            id={featured.data.id}
+            kind={featured.data.previewKind}
+            labels={featured.data.previewLabels}
+            size="lg"
+          />
+        </div>
+      </a>
+    </Section>
+  )}
+
+  {/* REST OF ARCHIVE */}
+  {rest.length > 0 && (
+    <Section
+      theme="dark"
+      eyebrow="Archive"
+      title="More briefs"
+      sub="Older briefs from the Pirxey field log."
+    >
+      <ol class="brief-list">
+        {rest.map(b => (
+          <li>
+            <a href={`/briefs/${b.slug}/`}>
+              <div class="rest-left">
+                <div class="meta">
+                  <span class="id">#{b.data.id}</span>
+                  <time datetime={b.data.publishedAt.toISOString().slice(0,10)}>
+                    {b.data.publishedAt.toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})}
+                  </time>
+                  {b.data.tags && b.data.tags.length > 0 && (
+                    <span class="tags">{b.data.tags.slice(0,3).join(" · ")}</span>
+                  )}
+                </div>
+                <h3>{b.data.title}</h3>
+                {b.data.subtitle && <p class="sub">{b.data.subtitle}</p>}
+                <p class="desc">{b.data.description}</p>
+                {b.data.kit.length > 0 && (
+                  <ul class="rest-kit">
+                    {b.data.kit.slice(0, 2).map((line) => (
+                      <li><span class="bullet">◆</span><span set:html={line} /></li>
+                    ))}
+                  </ul>
+                )}
+                <span class="arrow">Read brief
+                  <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8M7 3l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+                </span>
+              </div>
+              <div class="rest-right">
+                <BriefThumbnail
+                  id={b.data.id}
+                  kind={b.data.previewKind}
+                  labels={b.data.previewLabels}
+                  size="sm"
+                />
+              </div>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </Section>
+  )}
+
+  {/* ABOUT — light section, beige */}
+  <Section
+    theme="light"
+    id="about"
+    eyebrow="About · Mission Briefs"
+    titleHtml="Why we write these. <em>And why they look like this.</em>"
+  >
+    <div class="about-grid">
+      <article class="about-card">
+        <div class="num">01</div>
+        <h3>Built, not described.</h3>
+        <p>Every brief ships with a widget you can grab and play with. If we can't make the concept playable, we don't ship the brief.</p>
+      </article>
+      <article class="about-card">
+        <div class="num">02</div>
+        <h3>Linked, not locked.</h3>
+        <p>Each brief points to the Pirxey-authored <strong>Claude Skills</strong>, <strong>Google Gems</strong> and <strong>custom GPTs</strong> we use to apply that concept in our day-to-day. Take them, fork them, use them.</p>
+      </article>
+      <article class="about-card">
+        <div class="num">03</div>
+        <h3>Sourced, not invented.</h3>
+        <p>Every number in our models maps to public research or our own delivery telemetry across 100+ shipped products. Click through and verify.</p>
+      </article>
+    </div>
+  </Section>
+
+  <CTA
+    titleHtml="Have a concept you wish someone <em>made playable?</em>"
+    sub="Tell us. We'll either build the brief, or build the tool — and credit you when it ships."
+    primaryLabel="Send a suggestion"
+    primaryHref="mailto:mission@pirxey.com?subject=Mission%20Brief%20idea"
+    secondaryLabel="Talk to Pirxey"
+    secondaryHref="https://pirxey.com"
+    metaLeft="Pirxey · Aleja Grunwaldzka 472, 80-309 Gdańsk, Poland"
+    metaRight="130+ engineers · 100+ missions delivered"
+  />
+
+  <Footer note="Mission Briefs are published by Pirxey · Develop &amp; Prosper." />
+</BaseLayout>
+
+<style>
+  /* ───────────── HERO — live pirxey.com (cream + astronaut + planet) ───────────── */
+  .reg-hero {
+    position: relative; overflow: hidden;
+    border-radius: 0 0 var(--radius-section) var(--radius-section);
+    background: var(--color-surface-warm);
+    min-height: 720px;
+  }
+  .hero-planet {
+    position: absolute;
+    width: 64.5rem; height: auto;
+    bottom: 0; right: clamp(-30rem, 25vw - 30rem, 10rem);
+    z-index: 1; pointer-events: none; user-select: none;
+  }
+  .hero-astronaut {
+    position: absolute;
+    width: 37rem; height: auto;
+    top: 8.5rem; right: clamp(4rem, 23.33vw - 17rem, 1000rem);
+    z-index: 3; pointer-events: none; user-select: none;
+    filter: drop-shadow(0 24px 60px rgba(6, 4, 17, 0.35));
+    animation: float 12s ease-in-out infinite;
+    will-change: transform;
+  }
+  @keyframes float {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+    33%  { transform: translate3d(8px, -18px, 0) rotate(-0.6deg); }
+    66%  { transform: translate3d(-4px, -8px, 0) rotate(0.4deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-astronaut { animation: none; }
+  }
+  .hero-noise {
+    position: absolute; inset: 0; z-index: 2;
+    background-image: url("/brand/pirxey-noise-light.webp");
+    background-size: 512px 512px; background-repeat: repeat;
+    opacity: 0.22; mix-blend-mode: multiply;
+  }
+  .hero-inner {
+    position: relative; z-index: 5;
+    max-width: var(--max-w); margin: 0 auto;
+    padding: 144px 80px 96px;
+    display: flex; flex-direction: column; align-items: flex-start;
+  }
+  .hero-stars { width: 56px; height: 56px; margin-bottom: 28px; }
+  .hero-stars img { width: 100%; height: 100%; }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    font-family: var(--font-display); font-weight: 600; font-size: 12px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-dark-muted);
+    margin-bottom: 32px; padding: 8px 16px;
+    border: 1px solid var(--color-border-dark); border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.5);
+  }
+  .he-tag { display: inline-flex; align-items: center; gap: 8px; color: var(--color-accent-2); }
+  .he-tag .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent-2); box-shadow: 0 0 8px var(--color-accent); animation: beacon 2s ease-in-out infinite; }
+  .he-sep { color: var(--color-text-dark-muted); opacity: 0.5; }
+  .he-author { text-transform: none; font-style: italic; font-family: var(--font-body); font-weight: 500; letter-spacing: 0; color: var(--color-text-dark-muted); }
+  .he-author strong { font-style: normal; font-weight: 600; color: var(--color-text-dark); font-family: var(--font-display); }
+
+  .reg-hero h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(48px, 6.4vw, 72px); line-height: 1.04;
+    letter-spacing: -0.02em; margin: 0 0 28px;
+    color: var(--color-text-dark); max-width: 720px; text-wrap: balance;
+  }
+  .reg-hero h1 em { font-style: normal; color: var(--color-accent-2); }
+  .hero-sub {
+    font-family: var(--font-body); font-size: 19px; line-height: 1.55;
+    color: var(--color-text-dark-muted); margin: 0 0 16px; max-width: 620px;
+    letter-spacing: -0.005em;
+  }
+  .hero-sub strong { color: var(--color-text-dark); font-weight: 600; }
+  .hero-kicker {
+    font-family: var(--font-body); font-size: 16px; line-height: 1.5;
+    color: var(--color-text-dark-muted); margin: 0 0 40px; max-width: 560px;
+  }
+  .hero-kicker em { font-style: italic; color: var(--color-accent-2); font-weight: 500; }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 26px; border-radius: var(--radius-pill);
+    background: var(--color-accent); color: #fff; text-decoration: none;
+    font-family: var(--font-display); font-weight: 600; font-size: 15px;
+    box-shadow: 0 8px 24px -8px rgba(255, 96, 38, 0.6);
+    transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  }
+  .hero-cta:hover { background: var(--color-accent-strong); transform: translateY(-1px); box-shadow: 0 12px 32px -8px rgba(255, 96, 38, 0.7); }
+
+  /* ───────────── FEATURED CARD ───────────── */
+  .featured-card {
+    display: grid; grid-template-columns: 1.4fr 1fr;
+    gap: 56px; margin-top: 48px;
+    background: linear-gradient(135deg, rgba(255,96,38,0.06), rgba(249,249,234,0.025) 60%);
+    border: 1px solid rgba(255,96,38,0.22);
+    border-radius: 18px;
+    padding: 44px;
+    text-decoration: none; color: var(--on-dark);
+    transition: border-color 0.2s, transform 0.2s, background 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .featured-card:before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--orange), transparent);
+    opacity: 0.7;
+  }
+  .featured-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+
+  .feat-meta {
+    display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
+    font-family: var(--font-sans); font-size: 11px; font-weight: 600;
+    color: var(--on-dark-3); letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .feat-meta .id { color: var(--orange); font-variant-numeric: tabular-nums; font-size: 13px; }
+  .feat-meta time { font-variant-numeric: tabular-nums; }
+  .feat-meta .dot-sep { color: var(--on-dark-3); opacity: 0.4; }
+  .feat-meta .tags { letter-spacing: 0.04em; text-transform: none; font-weight: 500; color: var(--on-dark-2); }
+
+  .featured-card h3 {
+    font-family: var(--font-sans); font-weight: 700;
+    font-size: clamp(28px, 3.4vw, 40px); line-height: 1.1;
+    letter-spacing: -0.018em; margin: 0 0 16px;
+    color: var(--on-dark); text-wrap: balance;
+  }
+  .featured-card .desc {
+    font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+    color: var(--on-dark-2); margin: 0 0 24px;
+  }
+
+  .kit {
+    border-top: 1px dashed var(--line-dark-2);
+    padding-top: 20px; margin-bottom: 28px;
+  }
+  .kit-label {
+    font-family: var(--font-sans); font-size: 10px; font-weight: 600;
+    color: var(--orange); letter-spacing: 0.12em; text-transform: uppercase;
+    display: block; margin-bottom: 12px;
+  }
+  .kit ul {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .kit li {
+    font-family: var(--font-body); font-size: 14px; line-height: 1.5;
+    color: var(--on-dark-2);
+    display: flex; gap: 10px; align-items: baseline;
+  }
+  .kit li .bullet { color: var(--orange); font-size: 9px; flex-shrink: 0; }
+  .kit li em { color: var(--orange); font-style: italic; }
+
+  .open-arrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-sans); font-weight: 600; font-size: 14px;
+    color: var(--orange); letter-spacing: 0.02em;
+  }
+  .open-arrow svg { transition: transform 0.2s; }
+  .featured-card:hover .open-arrow svg { transform: translateX(4px); }
+
+  /* preview thumbnail — abstract "chart" rendering */
+  .featured-right { display: flex; align-items: center; justify-content: center; }
+  .preview-thumb {
+    width: 100%; aspect-ratio: 8 / 5;
+    background: rgba(6, 4, 17, 0.6);
+    border: 1px solid var(--line-dark-2);
+    border-radius: 12px;
+    position: relative; overflow: hidden;
+    box-shadow: 0 16px 40px -16px rgba(255, 96, 38, 0.32);
+  }
+  .thumb-grid {
+    position: absolute; inset: 16px;
+    background-image:
+      linear-gradient(rgba(249,249,234,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(249,249,234,0.05) 1px, transparent 1px);
+    background-size: 28px 22px;
+  }
+  .thumb-curve {
+    position: absolute; inset: 16px;
+  }
+  .thumb-curve svg { width: 100%; height: 100%; }
+  .thumb-curve .ann-l, .thumb-curve .ann-r {
+    position: absolute; font-family: var(--font-sans); font-size: 11px; font-weight: 700;
+    color: var(--on-dark); padding: 3px 8px; border-radius: 999px;
+    background: rgba(6, 4, 17, 0.85); border: 1px solid var(--line-dark-2);
+    letter-spacing: 0.02em;
+  }
+  .thumb-curve .ann-l { top: 8px; left: 28px; color: var(--amber); }
+  .thumb-curve .ann-r { bottom: 8px; right: 28px; color: var(--orange); }
+
+  /* ───────────── BRIEF LIST (rest of archive) ───────────── */
+  .brief-list { list-style: none; padding: 0; margin: 48px 0 0; display: flex; flex-direction: column; gap: 20px; }
+  .brief-list li a {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 40px;
+    padding: 36px 40px;
+    background: rgba(249, 249, 234, 0.025);
+    border: 1px solid var(--line-dark); border-radius: var(--radius-card);
+    text-decoration: none; color: var(--on-dark);
+    transition: border-color 0.2s, transform 0.2s, background 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .brief-list li a:before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--orange), transparent);
+    opacity: 0.55; transition: opacity 0.2s;
+  }
+  .brief-list li a:hover {
+    border-color: var(--orange); transform: translateY(-2px);
+    background: rgba(255, 96, 38, 0.04);
+  }
+  .brief-list li a:hover:before { opacity: 1; }
+  .rest-left { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .rest-right { display: flex; align-items: center; justify-content: center; min-width: 0; }
+  .brief-list .meta {
+    display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
+    font-family: var(--font-sans); font-size: 11px; font-weight: 600;
+    color: var(--on-dark-3); letter-spacing: 0.08em; text-transform: uppercase;
+    margin: 0;
+  }
+  .brief-list .meta .id { color: var(--orange); font-variant-numeric: tabular-nums; font-size: 13px; }
+  .brief-list .meta .tags { letter-spacing: 0.04em; text-transform: none; font-weight: 500; color: var(--on-dark-2); }
+  .brief-list h3 {
+    font-family: var(--font-sans); font-weight: 700;
+    font-size: clamp(22px, 2.6vw, 30px); line-height: 1.15;
+    letter-spacing: -0.014em; margin: 4px 0 0; text-wrap: balance;
+  }
+  .brief-list .sub {
+    font-family: var(--font-body); font-style: italic; font-size: 16px;
+    color: var(--on-dark-2); margin: 0;
+  }
+  .brief-list .desc {
+    font-family: var(--font-body); font-size: 14.5px; line-height: 1.6;
+    color: var(--on-dark-2); margin: 0;
+  }
+  .rest-kit {
+    list-style: none; padding: 0; margin: 4px 0 0;
+    display: flex; flex-direction: column; gap: 6px;
+    border-top: 1px dashed var(--line-dark-2); padding-top: 12px;
+  }
+  .rest-kit li {
+    display: flex; gap: 10px; align-items: baseline;
+    font-family: var(--font-body); font-size: 13.5px; line-height: 1.45;
+    color: var(--on-dark-2);
+  }
+  .rest-kit li .bullet { color: var(--orange); font-size: 9px; flex-shrink: 0; }
+  .rest-kit li :global(em) { color: var(--orange); font-style: italic; }
+  .brief-list .arrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-sans); font-weight: 600; font-size: 14px;
+    color: var(--orange); letter-spacing: 0.02em;
+    margin-top: 6px;
+  }
+  .brief-list .arrow svg { transition: transform 0.2s; }
+  .brief-list li a:hover .arrow svg { transform: translateX(4px); }
+
+  /* ───────────── ABOUT (light section) ───────────── */
+  .about-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px; margin-top: 48px;
+  }
+  .about-card {
+    background: #fff; border: 1px solid var(--line-light); border-radius: 16px;
+    padding: 32px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .about-card .num {
+    font-family: var(--font-sans); font-weight: 700;
+    font-size: 56px; line-height: 1; color: var(--orange-overlay);
+    letter-spacing: -0.04em;
+  }
+  .about-card h3 {
+    font-family: var(--font-sans); font-weight: 700;
+    font-size: 22px; line-height: 1.2;
+    letter-spacing: -0.01em; margin: 0;
+  }
+  .about-card p {
+    font-family: var(--font-body); font-size: 15px; line-height: 1.55;
+    color: var(--on-light-2); margin: 0;
+  }
+  .about-card p strong { color: var(--on-light); font-weight: 600; }
+
+  /* ───────────── RESPONSIVE ───────────── */
+  @media (max-width: 1100px) {
+    .hero-inner { padding: 120px 48px 80px; }
+    .featured-card { grid-template-columns: 1fr; gap: 32px; padding: 36px; }
+    .brief-list li a { grid-template-columns: 1fr; gap: 28px; padding: 30px 32px; }
+    .about-grid { grid-template-columns: 1fr; }
+  }
+  /* Astronaut + planet are 37rem / 64.5rem — bigger than mobile viewport and
+     overlap the H1. Hide on small screens. */
+  @media (max-width: 900px) {
+    .hero-planet, .hero-astronaut { display: none; }
+  }
+  @media (max-width: 760px) {
+    .hero-inner { padding: 100px 24px 64px; }
+    .featured-card { padding: 28px; }
+    .brief-list li a { padding: 24px; gap: 24px; }
+  }
+</style>

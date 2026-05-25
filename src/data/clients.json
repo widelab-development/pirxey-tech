@@ -1,0 +1,12 @@
+{
+  "_comment": "Client logos showcase ('We developed software for' section). Add new client = append entry + drop logo SVG to public/assets/clients/. Both light and dark variants if logo doesn't work on both bgs.",
+  "clients": [
+    { "slug": "shiftwow", "name": "ShiftWow", "logo": "/assets/clients/shiftwow.svg", "url": "https://shiftwow.com" },
+    { "slug": "21shares", "name": "21shares", "logo": "/assets/clients/21shares.svg", "url": "https://21shares.com" },
+    { "slug": "fleishigs", "name": "Fleishigs", "logo": "/assets/clients/fleishigs.svg" },
+    { "slug": "alior", "name": "Alior", "logo": "/assets/clients/alior.svg" },
+    { "slug": "circlek", "name": "Circle K", "logo": "/assets/clients/circlek.svg", "url": "https://circlek.com" },
+    { "slug": "blinkops", "name": "BlinkOps", "logo": "/assets/clients/blinkops.svg" },
+    { "slug": "founderpath", "name": "FounderPath", "logo": "/assets/clients/founderpath.svg", "url": "https://founderpath.com" }
+  ]
+}
