@@ -1,4 +1,10 @@
 User-agent: *
-Disallow: /
+Allow: /
 
-Sitemap: https://pirxey.tech/sitemap-index.xml
+# pirxey.tech is a staging/experimental site. All pages return
+# <meta name="robots" content="noindex,nofollow"> via src/components/SEO.astro
+# AND HTTP header X-Robots-Tag: noindex, nofollow via public/_headers
+# (Cloudflare Pages). Crawling IS allowed so Googlebot can read the noindex
+# signals and properly exclude pages from the index. Sitemap intentionally
+# omitted — pre-launch all content is noindex, briefs will migrate to
+# pirxey.com which is the canonical destination.

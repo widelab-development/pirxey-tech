@@ -1,0 +1,10 @@
+# Cloudflare Pages — custom headers.
+# https://developers.cloudflare.com/pages/configuration/headers/
+
+# Block indexing for ALL pages and assets on pirxey.tech.
+# pirxey.tech is a staging/experimental subdomain; content will migrate
+# to pirxey.com (the canonical destination). X-Robots-Tag at HTTP layer
+# covers HTML, PDFs, images, and any other crawlable resource — stronger
+# than <meta robots> alone (which only works inside HTML).
+/*
+  X-Robots-Tag: noindex, nofollow
